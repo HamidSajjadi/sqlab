@@ -2,7 +2,7 @@ import datetime
 
 import os
 from django.shortcuts import render, redirect
-from shimons.models import DashboardPost, RequestModel
+from shimons.models import DashboardPost, RequestModel, Algorithm
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 
@@ -46,6 +46,12 @@ def upload_algorithm(request):
         path = os.path.join("user_" + str(request.user.id), "req_" + str(req.id), 'detection algorithm')
         for file in request.FILES.getlist('jar-files'):
             save_algorithm(file, path)
-            return HttpResponseRedirect('/dashbord/')
+
+        alg = Algorithm()
+        alg.request = req
+        alg.jar_path = path
+        alg.main_jarFile = main_file
+        alg.save()
+        return HttpResponseRedirect('/dashbord/')
 
     return None
