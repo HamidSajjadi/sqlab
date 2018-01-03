@@ -29,9 +29,8 @@ def signup(request):
                     login(request, user)
                     return HttpResponseRedirect('/index')
                 else:
-                    return HttpResponse('ridi')
+                    return HttpResponse('problem occured')
             else:
-                print(form.errors.items())
                 return render(request, 'sqlab/signup.html', {'form': form})
         pass
     else:
@@ -48,11 +47,15 @@ def login_user(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('pass')
+        next_url = request.POST.get('next_url')
         user = authenticate(email=email, password=password)
         if user:
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect('/index/')
+                if next_url is None:
+                    return HttpResponseRedirect('/index/')
+                else:
+                    return HttpResponseRedirect(next_url)
             else:
                 return HttpResponse("Your account is disabled.")
         else:
@@ -61,4 +64,5 @@ def login_user(request):
             return render(request, 'sqlab/login.html',
                           {'error': '* Your Email or password is not correct, please try again.'})
     else:
-        return render(request, 'sqlab/login.html')
+        next_url = request.GET.get('next')
+        return render(request, 'sqlab/login.html', {'next_url': next_url})

@@ -17,13 +17,14 @@ from django.contrib import admin
 from django.urls import path
 from django.views.generic import RedirectView
 
-from shimons.Views import user_views, general_views
+from shimons.Views import user_views, general_views, dashbord_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('signup/', user_views.signup, name='signup'),
     path('logout/', user_views.logout_user, name='logout'),
     path('login/', user_views.login_user, name='login'),
+    path('dashbord/', dashbord_views.dashbord, name='dashbord'),
     path('index/', general_views.index, name='index'),
     path(r'', RedirectView.as_view(url='index/')),
 

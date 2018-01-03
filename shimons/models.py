@@ -27,7 +27,7 @@ class Post(models.Model):
         return self.title
 
 
-class DashboardPosts(models.Model):
+class DashboardPost(models.Model):
     title = models.CharField(max_length=128, unique=True)
     subtitle = models.CharField(max_length=256)
     content = models.TextField()

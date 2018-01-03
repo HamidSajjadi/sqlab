@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdming
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.utils.translation import gettext as _
-from .models import UserProfile, Post, DashboardPosts, Field
+from .models import UserProfile, Post, DashboardPost, Field
 
 
 class UserAdmin(BaseUserAdming):
@@ -22,5 +22,5 @@ class UserAdmin(BaseUserAdming):
 
 admin.site.register(UserProfile, UserAdmin)
 admin.site.register(Post)
-admin.site.register(DashboardPosts)
+admin.site.register(DashboardPost)
 admin.site.register(Field)
