@@ -4,8 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from shimons import forms
 from django.contrib.auth import authenticate, login, logout, get_user_model
-from django.contrib.auth.base_user import check_password
-from shimons.models import UserProfile
+
 
 
 def signup(request):

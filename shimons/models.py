@@ -8,6 +8,7 @@ class UserProfile(AbstractEmailUser):
     last_name = models.CharField(max_length=128)
     university = models.CharField(max_length=128, null=True)
     field = models.ForeignKey('Field', on_delete=models.SET_NULL, null=True)
+
     def __unicode__(self):
         if self.first_name and self.last_name:
             return self.first_name + " " + self.last_name
@@ -19,7 +20,7 @@ class Post(models.Model):
     title = models.CharField(max_length=128, unique=True)
     subtitle = models.CharField(max_length=256)
     content = models.TextField()
-    date_created = models.DateTimeField(null=True)
+    date_created = models.DateTimeField(null=True, auto_now=True)
     date_modified = models.DateTimeField(null=True)
     status = models.SmallIntegerField(default=1, blank=True, null=False)
 
@@ -44,3 +45,29 @@ class Field(models.Model):
 
     def __str__(self):  # For Python 2, use __str__ on Python 3
         return self.name
+
+
+class RequestModel(models.Model):
+    user = models.ForeignKey('UserProfile', on_delete=models.CASCADE, null=True)
+    date = models.DateField(null=False)
+    status = models.IntegerField(default=1)
+
+    def __str__(self):
+        return "request " + str(self.id) + "for user " + self.user.email
+
+
+class Algorithm(models.Model):
+    request = models.OneToOneField(RequestModel, on_delete=models.CASCADE)
+    jar_path = models.CharField(null=False, max_length=255)
+    main_jarFile = models.CharField(null=False, max_length=128)
+    src_path = models.CharField(null=True, max_length=255)
+
+    def __str__(self):
+        return "algorihm for " + str(self.request)
+
+class Patterns(models.Model):
+    pattern_path = models.CharField(null=False,max_length=255)
+    request = models.OneToOneField(RequestModel, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "Pattern for " + str(self.request)

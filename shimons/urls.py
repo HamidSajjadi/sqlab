@@ -25,6 +25,7 @@ urlpatterns = [
     path('logout/', user_views.logout_user, name='logout'),
     path('login/', user_views.login_user, name='login'),
     path('dashbord/', dashbord_views.dashbord, name='dashbord'),
+    path('dashbord/upload/algorithm/', dashbord_views.upload_algorithm, name='algorithm upload'),
     path('index/', general_views.index, name='index'),
     path(r'', RedirectView.as_view(url='index/')),
 
