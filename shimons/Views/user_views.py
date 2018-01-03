@@ -12,6 +12,10 @@ def signup(request):
     if request.method == "POST":
         if request.method == "POST":
             form = forms.UserForm(request.POST)
+            if request.POST.get('terms') != 'on':
+                return render(request, 'sqlab/signup.html', {'form': form,
+                                                             'termError': 'You need to read and accept our terms of '
+                                                                          'service for using our servicess'})
             if form.is_valid():
                 print("signup:" + form.cleaned_data['email'] + form.cleaned_data['password'] + "okay")
                 post = form.save()
@@ -21,7 +25,6 @@ def signup(request):
                 new_user = authenticate(email=form.cleaned_data['email'],
                                         password=form.cleaned_data['password'],
                                         )
-                print('new_user:', user)
                 if user is not None:
                     login(request, user)
                     return HttpResponseRedirect('/index')
@@ -29,7 +32,7 @@ def signup(request):
                     return HttpResponse('ridi')
             else:
                 print(form.errors.items())
-                return render(request, 'sqlab/signup.html', {'form': form, 'error': form.errors})
+                return render(request, 'sqlab/signup.html', {'form': form})
         pass
     else:
         form = forms.UserForm()
@@ -45,9 +48,7 @@ def login_user(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('pass')
-        print(email, password)
         user = authenticate(email=email, password=password)
-
         if user:
             if user.is_active:
                 login(request, user)
@@ -56,4 +57,8 @@ def login_user(request):
                 return HttpResponse("Your account is disabled.")
         else:
             # Bad login details were provided. So we can't log the user in.
-            return HttpResponse("Invalid login details supplied.")
+            print("here")
+            return render(request, 'sqlab/login.html',
+                          {'error': '* Your Email or password is not correct, please try again.'})
+    else:
+        return render(request, 'sqlab/login.html')

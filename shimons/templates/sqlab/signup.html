@@ -1,9 +1,12 @@
 {% extends 'sqlab/main.html' %}
 {% load staticfiles %}
 {% block title %}Signup{% endblock %}
+{% block customjs %}
+    <script src="{% static 'sqlab/js/misc.js' %}"></script>
+{% endblock %}
 {% block content %}
-    <div class="container">
 
+    <div class="container">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-12">
@@ -14,7 +17,7 @@
             </div>
             <form class="form-horizontal" role="form" style="margin-top: 40px;margin-right: 70px" method="post">
                 {% csrf_token %}
-                <div class="form-group">
+                <div class="form-group {% if form.first_name.errors %} has-error {% endif %}">
                     <label for="{{ form.first_name.id_for_label }}" class="col-sm-3 control-label"
                            style="color: #e8e5e5">
                         First Name
@@ -22,32 +25,39 @@
 
                     <div class="col-sm-9">
                         {{ form.first_name }}
-
+                        {% if form.first_name.errors %}
+                            <span class="help-block"> {{ form.first_name.errors.as_text }}</span>
+                        {% endif %}
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="{{ form.first_name.id_for_label }}" class="col-sm-3 control-label"
+                <div class="form-group {% if form.last_name.errors %} has-error {% endif %}">
+                    <label for="{{ form.last_name.id_for_label }}" class="col-sm-3 control-label"
                            style="color: #e8e5e5">
                         Last Name
                     </label>
 
                     <div class="col-sm-9">
                         {{ form.last_name }}
-
+                        {% if form.last_name.errors %}
+                            <span class="help-block"> {{ form.last_name.errors.as_text }}</span>
+                        {% endif %}
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group {% if form.email.errors %} has-error {% endif %}">
                     <label for="{{ form.email.id_for_label }}" class="col-sm-3 control-label" style="color: #e8e5e5">
                         Email
                     </label>
 
                     <div class="col-sm-9">
                         {{ form.email }}
+                        {% if form.email.errors %}
+                            <span class="help-block"> {{ form.email.errors.as_text }}</span>
+                        {% endif %}
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group {% if form.university.errors %} has-error {% endif %}">
                     <label for="{{ form.university.id_for_label }}" class="col-sm-3 control-label"
                            style="color: #e8e5e5">
                         University Name
@@ -55,9 +65,12 @@
 
                     <div class="col-sm-9">
                         {{ form.university }}
+                        {% if form.university.errors %}
+                            <span class="help-block"> {{ form.university.errors.as_text }}</span>
+                        {% endif %}
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group {% if form.education.errors %} has-error {% endif %}">
                     <label for="{{ form.education.id_for_label }}" class="col-sm-3 control-label"
                            style="color: #e8e5e5">
                         Education
@@ -65,33 +78,45 @@
 
                     <div class="col-sm-9">
                         {{ form.education }}
+                        {% if form.education.errors %}
+                            <span class="help-block"> {{ form.education.errors.as_text }}</span>
+                        {% endif %}
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group {% if form.field.errors %} has-error {% endif %}">
                     <label for="{{ form.field.id_for_label }}" class="col-sm-3 control-label" style="color: #e8e5e5">
                         Field
                     </label>
 
                     <div class="col-sm-9">
                         {{ form.field }}
+                        {% if form.field.errors %}
+                            <span class="help-block"> {{ form.field.errors.as_text }}</span>
+                        {% endif %}
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group {% if form.password.errors %} has-error {% endif %}">
                     <label for="{{ form.password.id_for_label }}" class="col-sm-3 control-label" style="color: #e8e5e5">
                         Password
                     </label>
 
                     <div class="col-sm-9">
                         {{ form.password }}
+                        {% if form.password.errors %}
+                            <span class="help-block"> {{ form.password.errors.as_text }}</span>
+                        {% endif %}
                     </div>
                 </div>
 
                 <!-- /.form-group -->
-                <div class="form-group">
+                <div class="form-group {% if termsError %} has-error {% endif %}">
                     <div class="col-sm-9 col-sm-offset-3">
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox">I accept <a href="#">terms</a>
+                                <input name="terms" id="terms-checkbox" type="checkbox">I accept <a href="#">terms</a>
+                                {% if termsError %}
+                                    <span class="help-block"> {{ termsError }}</span>
+                                {% endif %}
                             </label>
                         </div>
                     </div>
@@ -99,7 +124,7 @@
                 <!-- /.form-group -->
                 <div class="form-group">
                     <div class="col-sm-9 col-sm-offset-3">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button id="reg-btn" type="submit" class="btn btn-primary">Submit</button>
                         </input>
                     </div>
                 </div>
