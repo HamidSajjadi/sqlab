@@ -1,0 +1,113 @@
+{% extends 'sqlab/main.html' %}
+{% load staticfiles %}
+{% block title %}Signup{% endblock %}
+{% block content %}
+    <div class="container">
+
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2 style="margin-top:40px;color: #00b385;font-size: x-large">
+                        Signup
+                    </h2>
+                </div>
+            </div>
+            <form class="form-horizontal" role="form" style="margin-top: 40px;margin-right: 70px" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}" class="col-sm-3 control-label"
+                           style="color: #e8e5e5">
+                        First Name
+                    </label>
+
+                    <div class="col-sm-9">
+                        {{ form.first_name }}
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}" class="col-sm-3 control-label"
+                           style="color: #e8e5e5">
+                        Last Name
+                    </label>
+
+                    <div class="col-sm-9">
+                        {{ form.last_name }}
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}" class="col-sm-3 control-label" style="color: #e8e5e5">
+                        Email
+                    </label>
+
+                    <div class="col-sm-9">
+                        {{ form.email }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.university.id_for_label }}" class="col-sm-3 control-label"
+                           style="color: #e8e5e5">
+                        University Name
+                    </label>
+
+                    <div class="col-sm-9">
+                        {{ form.university }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.education.id_for_label }}" class="col-sm-3 control-label"
+                           style="color: #e8e5e5">
+                        Education
+                    </label>
+
+                    <div class="col-sm-9">
+                        {{ form.education }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.field.id_for_label }}" class="col-sm-3 control-label" style="color: #e8e5e5">
+                        Field
+                    </label>
+
+                    <div class="col-sm-9">
+                        {{ form.field }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.password.id_for_label }}" class="col-sm-3 control-label" style="color: #e8e5e5">
+                        Password
+                    </label>
+
+                    <div class="col-sm-9">
+                        {{ form.password }}
+                    </div>
+                </div>
+
+                <!-- /.form-group -->
+                <div class="form-group">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox">I accept <a href="#">terms</a>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.form-group -->
+                <div class="form-group">
+                    <div class="col-sm-9 col-sm-offset-3">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                        </input>
+                    </div>
+                </div>
+            </form>
+            <!-- /form -->
+        </div>
+        <!-- ./container -->
+    </div>
+
+
+{% endblock %}

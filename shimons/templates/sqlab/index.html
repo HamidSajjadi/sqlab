@@ -1,0 +1,93 @@
+{% extends 'sqlab/main.html' %}
+{% load staticfiles %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row" style="margin-top: 0px">
+
+        <div class="carousel slide" id="imagecarousel" data-wrap="true" data-pause="false" data-interval="3000">
+
+            <div class="carousel-inner inner" style="margin-left:0px ">
+                <div class="item active">
+                    <img src="{% static 'bootstrap/pics/slider2.jpg' %}" class="img-responsive"/>
+
+                    <div class="carousel-caption">
+                        <button class="btn bg-primary" style="margin-bottom: 150px;font-size: xx-large;background-color:#00b385 !important;" >
+                            test your detection algorithm
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            {% for post in posts %}
+                <div class="well" style="background-color:#303030 ; height: 300px;margin-top: 20px;border: hidden">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p
+                               style="color:#d0cdcd;margin-left: 20px;font-size: x-large;font-family: yekan">
+                                {{ post.title }}
+                            </p>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p
+                                   style="color: #00b385;margin-left: 35px;font-size: large;font-family: yekan">
+                                    {{ post.subtitle }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p
+                                   style="margin-top: 20px;margin-left: 40px;margin-right:30px;color: #d0cdcd;font-size:medium;font-family: yekan">
+                                    {{ post.content|truncatechars:120 }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="#" data-toggle="modal" data-target="#modal_{{ forloop.counter }}">
+                                    <p  class="moreDiv">
+More Info
+                                    </p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="modal_{{ forloop.counter }}" role="dialog" style="direction: ltr;">
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header text-center" style="background-color: #eee">
+                    <button type="button" class="close" data-dismiss="modal"
+                            style="color: darkred">&times;</button>
+                    <h4 class="modal-title" style="margin: 0 auto;display: block;">
+                        {{ post.title }}
+                    </h4>
+                </div>
+                <div class="modal-body " style="max-width: 80%;margin: 0 auto;">
+                    {{ post.content }}
+                </div>
+                <div class="modal-footer text-center">
+                    <a class=" btn btn-success btn-lg" data-dismiss="modal"
+                       style="display: block;margin: 0 auto;min-width: 80% ; font-size: 16px ;background-color: #00b385">close</a>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
