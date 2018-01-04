@@ -2,3 +2,4 @@
 db.sqlite3
 shimons/migrations/
 shimons/__pycache__/
+shimons/views/__pycache__/
