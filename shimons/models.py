@@ -49,7 +49,7 @@ class Field(models.Model):
 
 class RequestModel(models.Model):
     user = models.ForeignKey('UserProfile', on_delete=models.CASCADE, null=True)
-    name = models.CharField(max_length=128,null=False, default="req_" + str(id))
+    name = models.CharField(max_length=128, null=False, default="")
     date = models.DateField(null=False)
     status = models.IntegerField(default=1)
 

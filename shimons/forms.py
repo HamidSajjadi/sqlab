@@ -28,6 +28,12 @@ class UserForm(forms.ModelForm):
         model = models.UserProfile
         fields = ('education', 'first_name', 'last_name', 'field', 'email', 'password', 'university')
 
-#
-# class PatternForm(forms.ModelForm):
-#     request = forms.ModelChoiceField(queryset=models.RequestModel.objects.filter(user=))
+
+class PatternForm(forms.Form):
+    user = None
+
+    request = forms.ModelChoiceField(queryset=models.RequestModel.objects.all(),
+                                     widget=forms.Select())
+
+    files = forms.FileField(
+        widget=forms.ClearableFileInput(attrs={'multiple': True, 'style': 'color:#d0cdcd;', 'accept': '.txt', 'name':'pattern-files'}))
