@@ -49,24 +49,26 @@ class Field(models.Model):
 
 class RequestModel(models.Model):
     user = models.ForeignKey('UserProfile', on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=128,null=False, default="req_" + str(id))
     date = models.DateField(null=False)
     status = models.IntegerField(default=1)
 
     def __str__(self):
-        return "request " + str(self.id) + "for user " + self.user.email
+        return self.name
 
 
 class Algorithm(models.Model):
     request = models.OneToOneField(RequestModel, on_delete=models.CASCADE)
-    jar_path = models.CharField(null=False, max_length=255)
+    jar_path = models.CharField(null=False, max_length=256)
     main_jarFile = models.CharField(null=False, max_length=128)
-    src_path = models.CharField(null=True, max_length=255)
+    src_path = models.CharField(null=True, max_length=256)
 
     def __str__(self):
         return "algorihm for " + str(self.request)
 
+
 class Patterns(models.Model):
-    pattern_path = models.CharField(null=False,max_length=255)
+    pattern_path = models.CharField(null=False, max_length=255)
     request = models.OneToOneField(RequestModel, on_delete=models.CASCADE)
 
     def __str__(self):

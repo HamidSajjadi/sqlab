@@ -29,18 +29,20 @@ def dashbord(request):
 def upload_algorithm(request):
     if request.method == 'POST':
         main_file = request.POST.get('jar-files-main')
-        # for file in request.FILES.getlist('jar-files'):
-        #     if main_file not in file.name:
-        #         error = {'jar-files-main': 'Your main file did not exist in uploaded files, try again.'}
-        #         return HttpResponseRedirect(
-        #             '/dashbord/?errors-field=jar-files-main&errors-text=Your main file did not exist in uploaded '
-        #             'files, try again')
-        #     if not file.name.endswith('.jar'):
-        #         error = {'jar-files': 'Please upload jars'}
-        #         return HttpResponseRedirect('/dashbord/?errors-field=jar-files&errors-text=Please upload jars')
-        #
+        name = request.POST.get('name')
+        for file in request.FILES.getlist('jar-files'):
+            if main_file not in file.name:
+                error = {'jar-files-main': 'Your main file did not exist in uploaded files, try again.'}
+                return HttpResponseRedirect(
+                    '/dashbord/?errors-field=jar-files-main&errors-text=Your main file did not exist in uploaded '
+                    'files, try again')
+            if not file.name.endswith('.jar'):
+                error = {'jar-files': 'Please upload jars'}
+                return HttpResponseRedirect('/dashbord/?errors-field=jar-files&errors-text=Please upload jars')
+
         req = RequestModel()
         req.user = request.user
+        req.name = name
         req.date = datetime.datetime.now()
         req.save()
         path = os.path.join("user_" + str(request.user.id), "req_" + str(req.id), 'detection algorithm')
