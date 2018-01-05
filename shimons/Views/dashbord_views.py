@@ -1,10 +1,10 @@
 import datetime
 
 import os
-from django.shortcuts import render, redirect
-from shimons.models import DashboardPost, RequestModel, Algorithm, Patterns
+from django.shortcuts import render
+from shimons.models import DashboardPost, Request, DetectionAlgorithm, RequestAttachPattern
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect
 from shimons.forms import PatternForm
 
 
@@ -24,8 +24,7 @@ def dashbord(request):
         error = None
     posts = DashboardPost.objects.all()
     pattern_form = PatternForm()
-    pattern_form.fields['request'].queryset = RequestModel.objects.filter(user=request.user)
-    print(RequestModel.objects.filter(user=request.user))
+    pattern_form.fields['request'].queryset = Request.objects.filter(user=request.user)
     return render(request, 'sqlab/dashbord.html', {'posts': posts, 'errors': error, 'pattern_form': pattern_form})
 
 
@@ -44,16 +43,16 @@ def upload_algorithm(request):
         #         error = {'jar-files': 'Please upload jars'}
         #         return HttpResponseRedirect('/dashbord/?errors-field=jar-files&errors-text=Please upload jars')
         #
-        req = RequestModel()
-        req.user = request.user
-        req.name = name
-        req.date = datetime.datetime.now()
+        req = Request()
+        req.user_id = request.user.id
+        req.request_date = datetime.datetime.now()
+        print("req: ",req)
         req.save()
-        path = os.path.join("user_" + str(request.user.id), "req_" + str(req.id), 'Detection Algorithm', 'jars')
+        path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'Detection Algorithm', 'jars')
         for file in request.FILES.getlist('jar-files'):
             save_file(file, path)
 
-        alg = Algorithm()
+        alg = DetectionAlgorithm()
         alg.request = req
         alg.jar_path = path
         alg.main_jarFile = main_file
@@ -68,12 +67,11 @@ def upload_patterns(request):
         form = PatternForm(request.POST, request.FILES)
         if form.is_valid():
             req = form.cleaned_data['request']
-            path = os.path.join("user_" + str(request.user.id), "req_" + str(req.id), 'Attached Patterns')
-            print("file11: ", request.FILES.getlist('files'))
+            path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'Attached Patterns')
             for file in request.FILES.getlist('files'):
                 save_file(file, path)
-            pattern = Patterns()
+            pattern = RequestAttachPattern()
             pattern.request = req
-            pattern.pattern_path = path
+            pattern.patterns_dir = path
             pattern.save()
             return HttpResponseRedirect('/dashbord/')

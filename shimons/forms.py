@@ -25,14 +25,14 @@ class UserForm(forms.ModelForm):
         return user
 
     class Meta:
-        model = models.UserProfile
+        model = models.User
         fields = ('education', 'first_name', 'last_name', 'field', 'email', 'password', 'university')
 
 
 class PatternForm(forms.Form):
     user = None
 
-    request = forms.ModelChoiceField(queryset=models.RequestModel.objects.all(),
+    request = forms.ModelChoiceField(queryset=models.Request.objects.all(),
                                      widget=forms.Select())
 
     files = forms.FileField(

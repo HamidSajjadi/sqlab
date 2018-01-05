@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'custom_user',
 ]
 
-AUTH_USER_MODEL = 'shimons.UserProfile'
+AUTH_USER_MODEL = 'shimons.User'
 
 AUTHENTICATION_BACKENDS = (
     # 'shimons.auth_model.AuthBackend'
@@ -81,10 +81,22 @@ WSGI_APPLICATION = 'shimons.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'cggt_pdb_test',
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
     }
 }
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
