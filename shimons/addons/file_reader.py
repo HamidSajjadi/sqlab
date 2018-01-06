@@ -3,10 +3,11 @@ import json
 
 def read_patterns(path):
     patterns = list()
-    file = json.load(open(path))
-    for group in file['groupsInfo']:
-        patterns.append(Pattern(group))
-    return patterns
+    with open(path) as reader:
+        file = json.load(reader)
+        for group in file['groupsInfo']:
+            patterns.append(Pattern(group))
+        return patterns
 
 
 class Pattern:

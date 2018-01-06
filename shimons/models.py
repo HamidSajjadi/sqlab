@@ -116,7 +116,7 @@ class SystemPatterns(models.Model):
 
 
 class TagetCode(models.Model):
-    targetcode_id = models.CharField(db_column='targetCode_id', primary_key=True,
+    targetcode_id = models.AutoField(db_column='targetCode_id', primary_key=True,
                                      max_length=255)  # Field name made lowercase.
     classdiagram_path = models.CharField(db_column='classDiagram_path', max_length=255, blank=True,
                                          null=True)  # Field name made lowercase.

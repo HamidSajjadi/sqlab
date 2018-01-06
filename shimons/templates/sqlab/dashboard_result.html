@@ -2,32 +2,36 @@
      style="margin-right: 20px;margin-left: 20px;margin-top: 30px">
     {% if reqs %}
         {% for chart in chart_data %}
-            <canvas id="chart_{{ forloop.counter }}" width="600" height="300"></canvas>
-            <script>
-                new Chart(document.getElementById("chart_{{ forloop.counter }}"), {
-                    type: 'bar',
-                    data: {
-                        labels:{{ chart.patterns_labels |safe }},
-                        datasets: [
-                            {
-                                label: "TP",
-                                backgroundColor: "#3e95cd",
-                                data: {{ chart.tps | safe }}
-                            }, {
-                                label: "TP+FN",
-                                backgroundColor: "#8e5ea2",
-                                data: {{ chart.tpfns | safe }}
+            {% if chart.status == "Done" %}
+                <canvas id="chart_{{ forloop.counter }}" width="600" height="300"></canvas>
+                <script>
+                    new Chart(document.getElementById("chart_{{ forloop.counter }}"), {
+                        type: 'bar',
+                        data: {
+                            labels:{{ chart.patterns_labels |safe }},
+                            datasets: [
+                                {
+                                    label: "TP",
+                                    backgroundColor: "#3e95cd",
+                                    data: {{ chart.tps | safe }}
+                                }, {
+                                    label: "TP+FN",
+                                    backgroundColor: "#8e5ea2",
+                                    data: {{ chart.tpfns | safe }}
+                                }
+                            ]
+                        },
+                        options: {
+                            title: {
+                                display: true,
+                                text: 'Population growth (millions)'
                             }
-                        ]
-                    },
-                    options: {
-                        title: {
-                            display: true,
-                            text: 'Population growth (millions)'
                         }
-                    }
-                });
-            </script>
+                    });
+                </script>
+            {% elif chart.status == "Failed" %}
+                <div style="color: #e8e5e5;">There was a problem running your algorithm. please check it and upload again</div>
+            {% endif %}
         {% endfor %}
     {% else %}
         <div style="color: #e8e5e5;">Please use upload tab to upload files for your pattern detection algorithms</div>

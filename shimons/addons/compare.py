@@ -1,10 +1,12 @@
+import os
+
 from shimons.addons.file_reader import read_patterns
 import json
 
 
-def compare_patterns(user_file_path, sys_file_path):
-    user_file_path = 'C:\\Users\\S Hamid\\Desktop\\khosravi\\compare\\data\\user_out.json'
-    sys_file_path = 'C:\\Users\\S Hamid\\Desktop\\khosravi\\compare\\data\\sys_out.json'
+def compare_patterns(user_file_path, sys_file_path, resultPath):
+    # user_file_path = 'C:\\Users\\S Hamid\\Desktop\\khosravi\\compare\\data\\user_out.json'
+    # sys_file_path = 'C:\\Users\\S Hamid\\Desktop\\khosravi\\compare\\data\\sys_out.json'
 
     # read generated answers
     user_pattern_list = read_patterns(user_file_path)
@@ -73,8 +75,9 @@ def compare_patterns(user_file_path, sys_file_path):
     print('Overall FN = {}'.format(overall_fn))
     print('Overall FP = {}'.format(overall_fp))
     result_dict.update({'overall': {'tp': overall_tp, 'fp': overall_fp, 'fn': overall_fn}})
-    with open('data.json', 'w') as fp:
+    if not os.path.exists(resultPath):
+        os.makedirs(resultPath)
+    with open(os.path.join(resultPath, 'data.json'), 'w') as fp:
         json.dump(result_dict, fp)
 
-
-compare_patterns(None, None)
+# compare_patterns(None, None)

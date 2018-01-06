@@ -3,10 +3,11 @@ import datetime
 import os
 import json
 from django.shortcuts import render
-from shimons.models import DashboardPost, Request, DetectionAlgorithm, RequestAttachPattern
+from shimons.models import DashboardPost, Request, DetectionAlgorithm, RequestAttachPattern, AnalysisResult, TagetCode
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from shimons.forms import RequestForm
+from shimons.addons import compare
 
 
 def save_file(file, path):
@@ -32,16 +33,30 @@ def dashboard(request):
     tp_list = []
     tp_fn_list = []
     for req in reqs:
-        # TODO: read the file from db of req and analysis req
-        if True:  # req.request_exe_status == "Done":
-            # for analysis request for this request
-            with open('C:\\Users\\S Hamid\\PycharmProjects\\shimons\\shimons\\addons\\data.json', 'r') as json_file:
-                data = json.load(json_file)
-                for key in data:
-                    if key != "overall":
-                        patterns_list.append(key)
-                        tp_list.append(data[key]['tp'])
-                        tp_fn_list.append(data[key]['tp'] + data[key]['fn'])
+        if req.request_exe_status == "Done":
+            analysis = AnalysisResult.objects.filter(request=req.request_id)
+            for anal in analysis:  #:D
+                targetCode = TagetCode.objects.get(targetcode_id=anal.targetcode_id)
+                print(targetCode)
+                result_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id),
+                                           'reults', 'analysis_' + str(anal.request_id) + '_' + str(anal.targetcode_id),
+                                           )
+                print(anal.detectionresult_path, targetCode.patternsinfo_path)
+                compare.compare_patterns(anal.detectionresult_path, targetCode.patternsinfo_path, result_path)
+                anal.analysisresult_path = os.path.join(result_path, 'data.json')
+                anal.save()
+                with open(anal.analysisresult_path, 'r') as json_file:
+                    data = json.load(json_file)
+                    for key in data:
+                        if key != "overall":
+                            if key not in patterns_list:
+                                patterns_list.append(key)
+                                tp_list.append(data[key]['tp'])
+                                tp_fn_list.append(data[key]['tp'] + data[key]['fn'])
+                            else:
+                                ind = patterns_list.index(key)
+                                tp_list[ind] = tp_list[ind] + data[key]['tp']
+                                tp_fn_list[ind] = tp_fn_list[ind] + data[key]['tp'] + data[key]['fn']
         req_chart_data.append({'tps': tp_list, "tpfns": tp_fn_list, "patterns_labels": patterns_list,
                                "status": req.request_exe_status})
     return render(request, 'sqlab/dashboard.html',
