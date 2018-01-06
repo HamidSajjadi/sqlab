@@ -5,8 +5,10 @@
 <head>
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{% static 'admin/js/jquery.min.js' %}"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -16,7 +18,8 @@
     <link href="{% static 'sqlab/css/base.css' %}" rel="stylesheet">
     <link href="{% static 'sqlab/css/panel.css' %}" rel="stylesheet">
 
-    <script src="{% static 'admin/js/jquery.min.js' %}"></script>
+    <script src="{% static 'sqlab/js/chart.js' %}"></script>
+
     <title>panel</title>
 </head>
 <body class="bodyDiv">
@@ -69,9 +72,11 @@
     </nav>
 
     <div id="page-wrapper" style="background-color: #2f2f2f">
-        {% include 'sqlab/dashbord_posts.html' %}
+        {% include 'sqlab/dashboard_posts.html' %}
         <!-- /.container-fluid -->
-        {% include 'sqlab/dashbord_upload.html' %}
+        {% include 'sqlab/dashboard_upload.html' %}
+
+        {% include 'sqlab/dashboard_result.html' %}
     </div>
     <!-- /#page-wrapper -->
 </div><!-- /#wrapper -->
@@ -105,47 +110,22 @@
         $(selector).show();
     }
 
-    $('.nav').on('click', '.nav-btn', function (e) {
-        showContent(e.currentTarget.hash);
-        e.preventDefault();
-    });
-    showContent('#main');
-</script>
-<script type="text/javascript">
-    +function ($) {
-        'use strict';
-        var dropZone = document.getElementById('drop-zone');
-        var uploadForm = document.getElementById('js-upload-form');
+    //
+    $(document).ready(function () {
 
-        var startUpload = function (files) {
-            console.log(files)
-        };
-
-        uploadForm.addEventListener('submit', function (e) {
-            var uploadFiles = document.getElementById('js-upload-files').files;
-            e.preventDefault();
-
-            startUpload(uploadFiles)
-        });
-
-        dropZone.ondrop = function (e) {
-            e.preventDefault();
-            this.className = 'upload-drop-zone';
-
-            startUpload(e.dataTransfer.files)
-        };
-
-        dropZone.ondragover = function () {
-            this.className = 'upload-drop-zone drop';
-            return false;
-        };
-
-        dropZone.ondragleave = function () {
-            this.className = 'upload-drop-zone';
-            return false;
+        if (window.location.hash) {
+            var hash = location.hash;
+            hash = hash.split("?")[0];
+            showContent(hash);
+        } else {
+            showContent('#main');
         }
+    });
 
-    }(jQuery);
+    $('.nav').on('click', '.nav-btn', function (e) {
+
+        showContent(e.currentTarget.hash);
+    });
 </script>
 </body>
 </html>

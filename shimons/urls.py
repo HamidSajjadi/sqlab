@@ -24,9 +24,8 @@ urlpatterns = [
     path('signup/', user_views.signup, name='signup'),
     path('logout/', user_views.logout_user, name='logout'),
     path('login/', user_views.login_user, name='login'),
-    path('dashbord/', dashbord_views.dashbord, name='dashbord'),
-    path('dashbord/upload/algorithm/', dashbord_views.upload_algorithm, name='algorithm upload'),
-    path('dashbord/upload/patterns/', dashbord_views.upload_patterns, name='pattern upload'),
+    path('dashboard/', dashbord_views.dashboard, name='dashboard'),
+    path('dashboard/upload/', dashbord_views.upload_algorithm, name='algorithm upload'),
     path('index/', general_views.index, name='index'),
     path(r'', RedirectView.as_view(url='index/')),
 

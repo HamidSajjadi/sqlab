@@ -63,7 +63,7 @@ def compare_patterns(user_file_path, sys_file_path):
             overall_fp += 1
             fp += len(sys_p.inst_list)
             print('TP = {}\nFN = {}\nFP = {}'.format(tp, fn, fp))
-        result_dict.update({sys_p.name: {'tp': tp, 'fp': fp, 'fn': fn}})
+            result_dict.update({sys_p.name: {'tp': tp, 'fp': fp, 'fn': fn}})
 
     if overall_fp == 0:
         print('-- No pattern!')

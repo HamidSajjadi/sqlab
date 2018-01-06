@@ -29,11 +29,18 @@ class UserForm(forms.ModelForm):
         fields = ('education', 'first_name', 'last_name', 'field', 'email', 'password', 'university')
 
 
-class PatternForm(forms.Form):
-    user = None
+class RequestForm(forms.Form):
+    jar_files = forms.FileField(
+        widget=forms.ClearableFileInput(
+            attrs={'multiple': True, 'required': True, 'class': 'form-control', 'style': 'color:#d0cdcd;',
+                   'accept': '.jar',
+                   'name': 'jar-files'}))
+    main = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'name': 'jar-files-main', 'class': 'form-control', 'required': True, "placeholder": "Main File"}))
 
-    request = forms.ModelChoiceField(queryset=models.Request.objects.all(),
-                                     widget=forms.Select())
-
-    files = forms.FileField(
-        widget=forms.ClearableFileInput(attrs={'multiple': True, 'style': 'color:#d0cdcd;', 'accept': '.txt', 'name':'pattern-files'}))
+    pattern_files = forms.FileField(
+        widget=forms.ClearableFileInput(
+            attrs={'multiple': True, 'required': True, 'class': 'form-control', 'style': 'color:#d0cdcd;',
+                   'accept': '.txt',
+                   'name': 'pattern-files'}))
