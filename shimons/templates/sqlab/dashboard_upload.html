@@ -23,6 +23,12 @@
 
                     </div>
 
+                    <div class="form-group{% if errors.src_files %} has-error {% endif %}">
+                        <label style="color:#d0cdcd;" for="{{ req_form.src_files.id_for_label }}">Source Files
+                            Files:</label>
+                        {{ req_form.src_files }}
+                        <span class="help-block"> {{ errors.src_files }}</span>
+                    </div>
                     <div class="form-group">
                         <label style="color:#d0cdcd;" for="{{ req_form.pattern_files.id_for_label }}">Pattern
                             Files:</label>

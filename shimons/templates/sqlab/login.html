@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <h2 style="margin-top:40px;color: #00b385;font-size: x-large">
-                        Signup
+                        Login
                     </h2>
                 </div>
             </div>
@@ -36,14 +36,17 @@
                     </div>
                 </div>
                 {% if next_url %}
-                    <input type="hidden" value="{{ next_url }}" name="next_url" />
+                    <input type="hidden" value="{{ next_url }}" name="next_url"/>
                 {% endif %}
 
                 <!-- /.form-group -->
-                <div class="form-group">
-                    <div class="col-sm-9 col-sm-offset-3">
-                        <button id="reg-btn" type="submit" class="btn btn-primary">Submit</button>
-                        </input>
+                <div class="row">
+
+                    <div class="form-group form-inline">
+                        <div class="col-sm-9 col-sm-offset-3">
+                           <div style="color: #e8e5e5"> <button id="reg-btn" type="submit" class="btn btn-primary">Submit</button>
+                            Don't have an account? <a href="/signup/">signup</a></div>
+                        </div>
                     </div>
                 </div>
             </form>

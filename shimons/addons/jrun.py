@@ -1,4 +1,4 @@
 import os
 
 if __name__ == "__main__":
-    os.system("java -jar TestRunner.jar")
+    os.system("java -jar TestRunner.jar 12")

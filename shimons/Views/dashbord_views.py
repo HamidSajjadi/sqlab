@@ -56,8 +56,14 @@ def upload_algorithm(request):
         if form.is_valid():
             main_file = form.cleaned_data.get('main')
             if not main_file.endswith('.jar'):
-                main_file = main_file+'.jar'
+                main_file = main_file + '.jar'
+
             for file in request.FILES.getlist('jar_files'):
+                # Check if files are not .jar files
+                if not file.name.endswith('.jar'):
+                    return HttpResponseRedirect(
+                        '/dashboard/?errors-field=jar_files&errors_text=Please upload java executable files ('
+                        '.jar)#upload')
 
                 # Check main file exists in the files
                 if main_file not in file.name:
@@ -67,12 +73,6 @@ def upload_algorithm(request):
                         'uploaded '
                         'files, try again.#upload')
 
-                # Check if files are not .jar files
-                if not file.name.endswith('.jar'):
-                    return HttpResponseRedirect(
-                        '/dashboard/?errors-field=jar_files&errors_text=Please upload java executable files ('
-                        '.jar)#upload')
-
             req = Request()
             req.user_id = request.user.id
             req.request_date = datetime.datetime.now()
@@ -81,6 +81,10 @@ def upload_algorithm(request):
                                     'jars')
             for file in request.FILES.getlist('jar_files'):
                 save_file(file, alg_path)
+            src_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'Detection Algorithm',
+                                    'src')
+            for file in request.FILES.getlist('src_files'):
+                save_file(file, src_path)
             pat_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'Attached Patterns')
             for file in request.FILES.getlist('pattern_files'):
                 save_file(file, pat_path)

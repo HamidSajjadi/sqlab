@@ -39,6 +39,12 @@ class RequestForm(forms.Form):
         widget=forms.TextInput(
             attrs={'name': 'jar-files-main', 'class': 'form-control', 'required': True, "placeholder": "Main File"}))
 
+    src_files = forms.FileField(
+        widget=forms.ClearableFileInput(
+            attrs={'multiple': True, 'required': True, 'class': 'form-control', 'style': 'color:#d0cdcd;',
+                   'accept': '.zip,.java',
+                   'name': 'src-files'}))
+
     pattern_files = forms.FileField(
         widget=forms.ClearableFileInput(
             attrs={'multiple': True, 'required': True, 'class': 'form-control', 'style': 'color:#d0cdcd;',
