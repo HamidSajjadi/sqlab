@@ -15,10 +15,10 @@ def compare_patterns(user_file_path, sys_file_path, resultPath):
     sys_pattern_list = read_patterns(sys_file_path)
     result_dict = {}
     overall_tp, overall_fp, overall_fn = 0, 0, 0
-    print('>> PATTERNS IN SYSTEM FILE:')
+    # print('>> PATTERNS IN SYSTEM FILE:')
     for sys_p in sys_pattern_list:
-        print('\nPATTERN: {}'.format(sys_p.name))
-        print('System result: {}'.format(sys_p))
+        # print('\nPATTERN: {}'.format(sys_p.name))
+        # print('System result: {}'.format(sys_p))
 
         tp, fp, fn = 0, 0, 0
 
@@ -29,11 +29,11 @@ def compare_patterns(user_file_path, sys_file_path, resultPath):
                 usr_p = p
 
         if usr_p is None:
-            print('-- There is no such pattern in user file.')
+            # print('-- There is no such pattern in user file.')
             overall_fn += 1
             fn += len(sys_p.inst_list)
         else:  # system file and user file contain this pattern
-            print('User result: {}'.format(usr_p))
+            # print('User result: {}'.format(usr_p))
             overall_tp += 1
 
             # check instances
@@ -45,11 +45,11 @@ def compare_patterns(user_file_path, sys_file_path, resultPath):
             for usr_inst in usr_p.inst_list:
                 if usr_inst not in sys_p.inst_list:
                     fp += 1
-        print('TP = {}\nFN = {}\nFP = {}'.format(tp, fn, fp))
+        # print('TP = {}\nFN = {}\nFP = {}'.format(tp, fn, fp))
         result_dict.update(
             {sys_p.name: {'tp': tp, 'fp': fp, 'fn': fn, 'System result': str(sys_p), 'User result': str(usr_p)}})
 
-    print('\n\n>> PATTERNS ONLY IN USER FILE:')
+    # print('\n\n>> PATTERNS ONLY IN USER FILE:')
     for usr_p in user_pattern_list:
         # find this pattern in system file
 
@@ -60,20 +60,20 @@ def compare_patterns(user_file_path, sys_file_path, resultPath):
             if p.name == usr_p.name:
                 sys_p = p
         if sys_p is None:
-            print('\nPATTERN: {}'.format(sys_p.name))
-            print(usr_p)
+            # print('\nPATTERN: {}'.format(sys_p.name))
+            # print(usr_p)
             overall_fp += 1
             fp += len(sys_p.inst_list)
-            print('TP = {}\nFN = {}\nFP = {}'.format(tp, fn, fp))
+            # print('TP = {}\nFN = {}\nFP = {}'.format(tp, fn, fp))
             result_dict.update({sys_p.name: {'tp': tp, 'fp': fp, 'fn': fn}})
 
-    if overall_fp == 0:
-        print('-- No pattern!')
+            # if overall_fp == 0:
+            # print('-- No pattern!')
 
-    print('\n================')
-    print('Overall TP = {}'.format(overall_tp))
-    print('Overall FN = {}'.format(overall_fn))
-    print('Overall FP = {}'.format(overall_fp))
+    # print('\n================')
+    # print('Overall TP = {}'.format(overall_tp))
+    # print('Overall FN = {}'.format(overall_fn))
+    # print('Overall FP = {}'.format(overall_fp))
     result_dict.update({'overall': {'tp': overall_tp, 'fp': overall_fp, 'fn': overall_fn}})
     if not os.path.exists(resultPath):
         os.makedirs(resultPath)
