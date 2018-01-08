@@ -1,40 +1,155 @@
 <div id="result" class="container-fluid nav-content"
      style="margin-right: 20px;margin-left: 20px;margin-top: 30px">
-    {% if reqs %}
-        {% for chart in chart_data %}
-            {% if chart.status == "Done" %}
-                <canvas id="chart_{{ forloop.counter }}" width="600" height="300"></canvas>
-                <script>
-                    new Chart(document.getElementById("chart_{{ forloop.counter }}"), {
-                        type: 'bar',
-                        data: {
-                            labels:{{ chart.patterns_labels |safe }},
-                            datasets: [
-                                {
-                                    label: "TP",
-                                    backgroundColor: "#3e95cd",
-                                    data: {{ chart.tps | safe }}
-                                }, {
-                                    label: "TP+FN",
-                                    backgroundColor: "#8e5ea2",
-                                    data: {{ chart.tpfns | safe }}
+    {#    {% if reqs %}#}
+    {#        {% for chart in chart_data %}#}
+    {#            <canvas id="chart_{{ forloop.counter }}" width="500" height="200"></canvas>#}
+    {#            <script>#}
+    {#                new Chart(document.getElementById("chart_{{ forloop.counter }}"), {#}
+    {#                    type: 'bar',#}
+    {#                    data: {#}
+    {#                        labels:{{ chart.patterns_labels |safe }},#}
+    {#                        datasets: [#}
+    {#                            {#}
+    {#                                label: "TP",#}
+    {#                                backgroundColor: "#3e95cd",#}
+    {#                                data: {{ chart.tps | safe }}#}
+    {#                            }, {#}
+    {#                                label: "TP+FN",#}
+    {#                                backgroundColor: "#8e5ea2",#}
+    {#                                data: {{ chart.tpfns | safe }}#}
+    {#                            }#}
+    {#                        ]#}
+    {#                    },#}
+    {#                    options: {#}
+    {#                        title: {#}
+    {#                            display: true,#}
+    {#                            text: 'Your detection algorithm results'#}
+    {#                        }#}
+    {#                    }#}
+    {#                });#}
+    {#            </script>#}
+    {#        {% endfor %}#}
+    {#    {% else %}#}
+    {#        <div style="color: #e8e5e5;">Please use upload tab to upload files for your pattern detection algorithms</div>#}
+    {#    {% endif %}#}
+    <div id="Tab" class="container">
+        {% if req %}
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#simple" data-toggle="tab" style="color:#00b385">simple</a>
+                </li>
+                <li><a href="#medium" data-toggle="tab" style="color:#00b385">medium</a>
+                </li>
+                <li><a href="#hard" data-toggle="tab" style="color:#00b385">hard</a>
+                </li>
+            </ul>
+
+            <div class="tab-content ">
+                <div class="tab-pane active" id="simple">
+                    {% if chart_data.simple.len != 0 %}
+
+                        <canvas id="chart_simple" width="500" height="200"></canvas>
+                        <script>
+                            new Chart(document.getElementById("chart_simple"), {
+                                type: 'bar',
+                                data: {
+                                    labels:{{ chart_data.simple.patterns_list |safe }},
+                                    datasets: [
+                                        {
+                                            label: "TP",
+                                            backgroundColor: "#3e95cd",
+                                            data: {{ chart_data.simple.tp_list | safe }}
+                                        }, {
+                                            label: "TP+FN",
+                                            backgroundColor: "#8e5ea2",
+                                            data: {{ chart_data.simple.tp_fn_list | safe }}
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    title: {
+                                        display: true,
+                                        text: 'Your detection algorithm results on simple complexity'
+                                    }
                                 }
-                            ]
-                        },
-                        options: {
-                            title: {
-                                display: true,
-                                text: 'Population growth (millions)'
-                            }
-                        }
-                    });
-                </script>
-            {% elif chart.status == "Failed" %}
-                <div style="color: #e8e5e5;">There was a problem running your algorithm. please check it and upload again</div>
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <div style="color: #e8e5e5;">Please use upload tab to upload files for your pattern detection algorithms</div>
-    {% endif %}
+                            });
+                        </script>
+                    {% else %}
+                        <div style="color: #e8e5e5;">No Result for simple complexity code</div>
+                    {% endif %}
+                </div>
+                <div class="tab-pane" id="medium">
+                    {% if chart_data.medium.len != 0 %}
+
+                        <canvas id="chart_medium" width="500" height="200"></canvas>
+                        <script>
+                            new Chart(document.getElementById("chart_medium"), {
+                                type: 'bar',
+                                data: {
+                                    labels:{{ chart_data.medium.patterns_list |safe }},
+                                    datasets: [
+                                        {
+                                            label: "TP",
+                                            backgroundColor: "#3e95cd",
+                                            data: {{ chart_data.medium.tp_list | safe }}
+                                        }, {
+                                            label: "TP+FN",
+                                            backgroundColor: "#8e5ea2",
+                                            data: {{ chart_data.medium.tp_fn_list | safe }}
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    title: {
+                                        display: true,
+                                        text: 'Your detection algorithm results on medium complexity'
+                                    }
+                                }
+                            });
+                        </script>
+                    {% else %}
+                        <div style="color: #e8e5e5;">No Result for medium complexity code</div>
+                    {% endif %}
+                </div>
+                <div class="tab-pane" id="hard">
+                    {% if chart_data.hard.len != 0 %}
+
+                        <canvas id="chart_hard" width="500" height="200"></canvas>
+                        <script>
+                            new Chart(document.getElementById("chart_hard"), {
+                                type: 'bar',
+                                data: {
+                                    labels:{{ chart_data.hard.patterns_list |safe }},
+                                    datasets: [
+                                        {
+                                            label: "TP",
+                                            backgroundColor: "#3e95cd",
+                                            data: {{ chart_data.hard.tp_list | safe }}
+                                        }, {
+                                            label: "TP+FN",
+                                            backgroundColor: "#8e5ea2",
+                                            data: {{ chart_data.hard.tp_fn_list | safe }}
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    title: {
+                                        display: true,
+                                        text: 'Your detection algorithm results on hard complexity'
+                                    }
+                                }
+                            });
+                        </script>                    {% else %}
+                        <div style="color: #e8e5e5;">No Result for hard complexity code</div>
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <div style="color: #e8e5e5;">Please use upload tab to upload files for your pattern detection
+                algorithms
+            </div>
+        {% endif %}
+    </div>
+
 </div>
 

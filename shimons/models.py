@@ -29,8 +29,11 @@ class AnalysisResult(models.Model):
                                             null=True)  # Field name made lowercase.
     execution_status = models.CharField(max_length=255)
     targetcode = models.ForeignKey('TagetCode', models.DO_NOTHING,
-                                   db_column='targetCode_id')  # Field name made lowercase.
+                                   db_column='targetCode_id', primary_key=True)  # Field name made lowercase.
     request = models.ForeignKey('Request', models.DO_NOTHING, primary_key=True)
+
+    def __str__(self):
+        return "Analysis_" + str(self.request) + "_" + str(self.targetcode)
 
     class Meta:
         # managed = False
@@ -110,8 +113,12 @@ class SystemPatterns(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
     patterns_dir = models.CharField(max_length=255, blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+
     class Meta:
         # managed = False
+
         db_table = 'system_patterns'
 
 

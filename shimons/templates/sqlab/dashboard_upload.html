@@ -30,6 +30,15 @@
                         <span class="help-block"> {{ errors.src_files }}</span>
                     </div>
                     <div class="form-group">
+                        <label style="color:#d0cdcd;" for="{{ req_form.pattern_select.id_for_label }}">Select
+                            Patterns:</label>
+                        {% for checkbox in req_form.pattern_select %}
+                            <label class="btn btn-primary">
+                                {{ checkbox.tag }} {{ checkbox.choice_label }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                    <div class="form-group">
                         <label style="color:#d0cdcd;" for="{{ req_form.pattern_files.id_for_label }}">Pattern
                             Files:</label>
                         {{ req_form.pattern_files }}

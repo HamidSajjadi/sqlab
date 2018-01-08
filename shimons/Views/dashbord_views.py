@@ -3,7 +3,8 @@ import datetime
 import os
 import json
 from django.shortcuts import render
-from shimons.models import DashboardPost, Request, DetectionAlgorithm, RequestAttachPattern, AnalysisResult, TagetCode
+from shimons.models import DashboardPost, Request, DetectionAlgorithm, RequestAttachPattern, AnalysisResult, TagetCode, \
+    TargetCodeConfig, RequestSelectPattern
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from shimons.forms import RequestForm
@@ -27,40 +28,85 @@ def dashboard(request):
         error = None
     posts = DashboardPost.objects.all()
     pattern_form = RequestForm()
-    reqs = Request.objects.filter(user=request.user.id)
-    req_chart_data = []
+    req = Request.objects.filter(user=request.user.id).order_by('-request_date', '-request_id')
+    if len(req) == 0:
+        req = None
+    else:
+        req = req[0]
     patterns_list = []
+    # 3 types of complexity have different results
+    simple = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
+    medium = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
+    hard = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
     tp_list = []
     tp_fn_list = []
-    for req in reqs:
+    if req:
         if req.request_exe_status == "Done":
             analysis = AnalysisResult.objects.filter(request=req.request_id)
             for anal in analysis:  #:D
                 targetCode = TagetCode.objects.get(targetcode_id=anal.targetcode_id)
-                print(targetCode)
+                complexity = TargetCodeConfig.objects.get(complexity_id=targetCode.complexity_id)
                 result_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id),
-                                           'reults', 'analysis_' + str(anal.request_id) + '_' + str(anal.targetcode_id),
+                                           'results',
+                                           'analysis_' + str(anal.request_id) + '_' + str(anal.targetcode_id),
                                            )
-                print(anal.detectionresult_path, targetCode.patternsinfo_path)
-                compare.compare_patterns(anal.detectionresult_path, targetCode.patternsinfo_path, result_path)
-                anal.analysisresult_path = os.path.join(result_path, 'data.json')
+                compare.compare_patterns(anal.detectionresult_path, targetCode.patternsinfo_path, result_path,
+                                         prefix=complexity.complexity_level)
+                anal.analysisresult_path = os.path.join(result_path, complexity.complexity_level + '_data.json')
+                print(anal.detectionresult_path, anal)
+                # return None
                 anal.save()
+                # anal.analysisresult_path = os.path.join(result_path, 'data.json')
                 with open(anal.analysisresult_path, 'r') as json_file:
                     data = json.load(json_file)
+
                     for key in data:
                         if key != "overall":
-                            if key not in patterns_list:
-                                patterns_list.append(key)
-                                tp_list.append(data[key]['tp'])
-                                tp_fn_list.append(data[key]['tp'] + data[key]['fn'])
-                            else:
-                                ind = patterns_list.index(key)
-                                tp_list[ind] = tp_list[ind] + data[key]['tp']
-                                tp_fn_list[ind] = tp_fn_list[ind] + data[key]['tp'] + data[key]['fn']
-        req_chart_data.append({'tps': tp_list, "tpfns": tp_fn_list, "patterns_labels": patterns_list,
-                               "status": req.request_exe_status})
+                            if complexity.complexity_level == 'simple':
+                                if key not in simple['patterns_list']:
+                                    simple['patterns_list'].append(key)
+                                    simple['tp_list'].append(data[key]['tp'])
+                                    simple['tp_fn_list'].append(data[key]['tp'] + data[key]['fn'])
+                                else:
+                                    ind = simple['patterns_list'].index(key)
+                                    simple['tp_list'][ind] = simple['tp_list'][ind] + data[key]['tp']
+                                    simple['tp_fn_list'][ind] = simple['tp_fn_list'][ind] + data[key]['tp'] + data[key][
+                                        'fn']
+                            if complexity.complexity_level == 'medium':
+                                if key not in medium['patterns_list']:
+                                    medium['patterns_list'].append(key)
+                                    medium['tp_list'].append(data[key]['tp'])
+                                    medium['tp_fn_list'].append(data[key]['tp'] + data[key]['fn'])
+                                else:
+                                    ind = medium['patterns_list'].index(key)
+                                    medium['tp_list'][ind] = medium['tp_list'][ind] + data[key]['tp']
+                                    medium['tp_fn_list'][ind] = medium['tp_fn_list'][ind] + data[key]['tp'] + data[key][
+                                        'fn']
+                            if complexity.complexity_level == 'hard':
+                                if key not in hard['patterns_list']:
+                                    hard['patterns_list'].append(key)
+                                    hard['tp_list'].append(data[key]['tp'])
+                                    hard['tp_fn_list'].append(data[key]['tp'] + data[key]['fn'])
+                                else:
+                                    ind = medium['patterns_list'].index(key)
+                                    hard['tp_list'][ind] = hard['tp_list'][ind] + data[key]['tp']
+                                    hard['tp_fn_list'][ind] = hard['tp_fn_list'][ind] + data[key]['tp'] + data[key][
+                                        'fn']
+                                    # if key not in patterns_list:
+                                    #     patterns_list.append(key)
+                                    #     tp_list.append(data[key]['tp'])
+                                    #     tp_fn_list.append(data[key]['tp'] + data[key]['fn'])
+                                    # else:
+                                    #     ind = patterns_list.index(key)
+                                    #     tp_list[ind] = tp_list[ind] + data[key]['tp']
+                                    #     tp_fn_list[ind] = tp_fn_list[ind] + data[key]['tp'] + data[key]['fn']
+    simple['len'] = len(simple['patterns_list'])
+    medium['len'] = len(medium['patterns_list'])
+    hard['len'] = len(hard['patterns_list'])
+    req_chart_data = {'simple': simple, "medium": medium, "hard": hard}
+    print(req_chart_data)
     return render(request, 'sqlab/dashboard.html',
-                  {'posts': posts, 'errors': error, 'req_form': pattern_form, 'reqs': reqs,
+                  {'posts': posts, 'errors': error, 'req_form': pattern_form, 'req': req,
                    'chart_data': req_chart_data})
 
 
@@ -69,6 +115,7 @@ def upload_algorithm(request):
     if request.method == 'POST':
         form = RequestForm(request.POST, request.FILES)
         if form.is_valid():
+            print("HERE2")
             main_file = form.cleaned_data.get('main')
             if not main_file.endswith('.jar'):
                 main_file = main_file + '.jar'
@@ -112,6 +159,12 @@ def upload_algorithm(request):
             pattern.request = req
             pattern.patterns_dir = pat_path
             pattern.save()
+            print("OKAY: ", form.cleaned_data.get('pattern_select'))
+            for patt in form.cleaned_data.get('pattern_select'):
+                reqPat = RequestSelectPattern()
+                reqPat.request_id = req.request_id
+                reqPat.system_pattern_id = patt.pattern_id
+                reqPat.save()
             return HttpResponseRedirect('/dashboard/')
 
     return HttpResponseRedirect('/dashboard/')

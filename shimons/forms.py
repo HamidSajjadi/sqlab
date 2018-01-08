@@ -39,6 +39,11 @@ class RequestForm(forms.Form):
         widget=forms.TextInput(
             attrs={'name': 'jar-files-main', 'class': 'form-control', 'required': True, "placeholder": "Main File"}))
 
+    pattern_select = forms.ModelMultipleChoiceField(queryset=models.SystemPatterns.objects.all(),
+                                                    widget=forms.CheckboxSelectMultiple(
+                                                        attrs={'name': 'pattern-select',
+                                                               'class': 'form-control-inline',
+                                                               "placeholder": "Select Patterns"}))
     src_files = forms.FileField(
         widget=forms.ClearableFileInput(
             attrs={'multiple': True, 'required': True, 'class': 'form-control', 'style': 'color:#d0cdcd;',
