@@ -32,7 +32,6 @@ def proccess_analysis(request, req, final_file_path):
         compare.compare_patterns(anal.detectionresult_path, targetCode.patternsinfo_path, result_path,
                                  prefix=complexity.complexity_level)
         anal.analysisresult_path = os.path.join(result_path, complexity.complexity_level + '_data.json')
-        print(anal.detectionresult_path, anal)
         file_set[complexity.complexity_level].append(anal.analysisresult_path)
         # return None
         anal.save()
@@ -44,9 +43,92 @@ def proccess_analysis(request, req, final_file_path):
         compare.summarize(file_set['hard'], final_file_path, 'hard.json')
 
 
+def proccess_chart_data(raw_data):
+    tp_list = []
+    tp_fn_list = []
+    patterns_list = []
+    overall = []
+    for pattern in raw_data:
+        if pattern == 'overall':
+            overall = raw_data[pattern]
+            continue
+        patterns_list.append(pattern)
+        tp_list.append(0)
+        tp_fn_list.append(0)
+        for instannce in raw_data[pattern]:
+            tp_list[patterns_list.index(pattern)] += instannce['tp']
+            tp_fn_list[patterns_list.index(pattern)] += (instannce['tp'] + instannce['fn'])
+    return {'tp_list': tp_list, 'tp_fn_list': tp_fn_list, 'patterns_list': patterns_list, 'overall': overall,
+            'len': len(patterns_list)}
+
+
+def proccess_search_data(final_file_path):
+    simple = {'fn': [], 'tp': [], 'fp': []}
+    medium = {'fn': [], 'tp': [], 'fp': []}
+    hard = {'fn': [], 'tp': [], 'fp': []}
+
+    simple_file = os.path.join(final_file_path, 'simple.json')
+    medium_file = os.path.join(final_file_path, 'medium.json')
+    hard_file = os.path.join(final_file_path, 'hard.json')
+    if os.path.isfile(simple_file):
+        data = json.load(open(simple_file, 'r'))
+        for pattern in data:
+            if pattern == 'overall':
+                continue
+            simple['tp'].append({pattern: []})
+            simple['fn'].append({pattern: []})
+            simple['fp'].append({pattern: []})
+            for instance in data[pattern]:
+                if instance['tp'] > 0:
+                    simple['tp'][len(simple['tp'])-1][pattern].append(
+                        {"System result": instance['System result'], "User result": instance['User result']})
+                if instance['fn'] > 0:
+                    simple['fn'][len(simple['fn']) - 1][pattern].append(
+                        {"System result": instance['System result'], "User result": instance['User result']})
+                if instance['fp'] > 0:
+                    simple['fp'][len(simple['fp']) - 1][pattern].append(
+                        {"System result": instance['System result'], "User result": instance['User result']})
+    if os.path.isfile(medium_file):
+        data = json.load(open(medium_file, 'r'))
+        for pattern in data:
+            if pattern == 'overall':
+                continue
+            medium['tp'].append({pattern: []})
+            medium['fn'].append({pattern: []})
+            medium['fp'].append({pattern: []})
+            for instance in data[pattern]:
+                if instance['tp'] > 0:
+                    medium['tp'][len(medium['tp'])-1][pattern].append(
+                        {"System result": instance['System result'], "User result": instance['User result']})
+                if instance['fn'] > 0:
+                    medium['fn'][len(medium['fn']) - 1][pattern].append(
+                        {"System result": instance['System result'], "User result": instance['User result']})
+                if instance['fp'] > 0:
+                    medium['fp'][len(medium['fp']) - 1][pattern].append(
+                        {"System result": instance['System result'], "User result": instance['User result']})
+    if os.path.isfile(hard_file):
+        data = json.load(open(hard_file, 'r'))
+        for pattern in data:
+            if pattern == 'overall':
+                continue
+            hard['tp'].append({pattern: []})
+            hard['fn'].append({pattern: []})
+            hard['fp'].append({pattern: []})
+            for instance in data[pattern]:
+                if instance['tp'] > 0:
+                    hard['tp'][len(hard['tp'])-1][pattern].append(
+                        {"System result": instance['System result'], "User result": instance['User result']})
+                if instance['fn'] > 0:
+                    hard['fn'][len(hard['fn']) - 1][pattern].append(
+                        {"System result": instance['System result'], "User result": instance['User result']})
+                if instance['fp'] > 0:
+                    hard['fp'][len(hard['fp']) - 1][pattern].append(
+                        {"System result": instance['System result'], "User result": instance['User result']})
+        return {'simple': simple, 'medium': medium, 'hard': hard}
+
+
 @login_required()
 def dashboard(request):
-    print(request)
     if request.GET.get('errors-field'):
         error = {request.GET.get('errors-field'): request.GET.get('errors_text')}
     else:
@@ -63,8 +145,10 @@ def dashboard(request):
     simple = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
     medium = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
     hard = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
-    tp_list = []
-    tp_fn_list = []
+    simple_search = {'fn': [], 'tp': [], 'fp': []}
+    medium_search = {'fn': [], 'tp': [], 'fp': []}
+    hard_search = {'fn': [], 'tp': [], 'fp': []}
+    search_data = {'simple': simple_search, 'medium': medium_search, 'hard': hard_search}
     if req:
         if req.request_exe_status == "Done":
             final_file_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results',
@@ -75,28 +159,34 @@ def dashboard(request):
             simple_file = os.path.join(final_file_path, 'simple.json')
             medium_file = os.path.join(final_file_path, 'medium.json')
             hard_file = os.path.join(final_file_path, 'hard.json')
+
             if os.path.isfile(simple_file):
                 with open(simple_file, 'r') as json_reader:
                     simple_data = json.load(json_reader)
-                    print(simple_data)
+                    simple = proccess_chart_data(simple_data)
 
             if os.path.isfile(medium_file):
                 with open(medium_file, 'r') as json_reader:
                     medium_data = json.load(json_reader)
-                    print(medium_data)
+                    medium = proccess_chart_data(medium_data)
 
             if os.path.isfile(hard_file):
                 with open(hard_file, 'r') as json_reader:
                     hard_data = json.load(json_reader)
-                    print(hard_data)
+                    hard = proccess_chart_data(hard_data)
+
+            search_data = proccess_search_data(final_file_path)
+
         simple['len'] = len(simple['patterns_list'])
         medium['len'] = len(medium['patterns_list'])
         hard['len'] = len(hard['patterns_list'])
         req_chart_data = {'simple': simple, "medium": medium, "hard": hard}
-        print(req_chart_data)
-        # return render(request, 'sqlab/dashboard.html',
-        #               {'posts': posts, 'errors': error, 'req_form': pattern_form, 'req': req,
-        #                'chart_data': req_chart_data})
+
+
+        return render(request, 'sqlab/dashboard.html',
+                      {'posts': posts, 'errors': error, 'req_form': pattern_form, 'req': req,
+                       'chart_data': req_chart_data,
+                       'search_data': search_data})
 
 
 @login_required()
@@ -104,7 +194,6 @@ def upload_algorithm(request):
     if request.method == 'POST':
         form = RequestForm(request.POST, request.FILES)
         if form.is_valid():
-            print("HERE2")
             main_file = form.cleaned_data.get('main')
             if not main_file.endswith('.jar'):
                 main_file = main_file + '.jar'
@@ -148,7 +237,6 @@ def upload_algorithm(request):
             pattern.request = req
             pattern.patterns_dir = pat_path
             pattern.save()
-            print("OKAY: ", form.cleaned_data.get('pattern_select'))
             for patt in form.cleaned_data.get('pattern_select'):
                 reqPat = RequestSelectPattern()
                 reqPat.request_id = req.request_id

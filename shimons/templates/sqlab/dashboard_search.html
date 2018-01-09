@@ -1,7 +1,7 @@
 {% load index %}
 <div id="search" class="container-fluid nav-content"
      style="margin-right: 20px;margin-left: 20px;margin-top: 30px">
-    <div id="Tab" class="container">
+    <div id="Tab" class="container" style="width:97%">
         <ul class="nav nav-tabs">
             <li class="active">
                 <a href="#simple_search" data-toggle="tab" style="color:#00b385">simple</a>
@@ -14,24 +14,211 @@
 
         <div class="tab-content ">
             <div class="tab-pane active" id="simple_search">
-                <div style="color:#00b385">TP:
-                    {% for data in chart_data.simple.tp_list %}
-                        {% if data > 0 %}
-                            {{ chart_data.simple.patterns_list | index:forloop.counter0 }}
-                        {% endif %}
-                    {% endfor %}
-                </div>
+                {% if search_data.simple.fn or search_data.simple.tp or search_data.simple.fp %}
+                    <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden">
+                        <h1 class="h1-result">FN</h1>
+                        <div class="result well">
+                            <p class="p-result">
+                                {% for pattern in search_data.simple.fn %}
+                                    {% for key, value in pattern.items %}
+                                        {% if value %}
+                                            {{ key }} :
+                                            <br>
+                                            {% for item in value %}
+                                                {{ value }}
+                                                <br>
+                                            {% endfor %}
+                                            <br>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% endfor %}
+                            </p>
+                        </div>
+                        <h1 class="h1-result">FP</h1>
+
+                        <div class="result well">
+                            <p class="p-result">
+                                {% for pattern in search_data.simple.fp %}
+                                    {% for key, value in pattern.items %}
+                                        {% if value %}
+                                            {{ key }} :
+                                            <br>
+                                            {% for item in value %}
+                                                {{ value }}
+                                                <br>
+                                            {% endfor %}
+                                            <br>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% endfor %}                   </p>
+                        </div>
+                        <h1 class="h1-result">TP</h1>
+
+                        <div class="result well">
+                            <p class="p-result">
+                                {% for pattern in search_data.simple.fp %}
+                                    {% for key, value in pattern.items %}
+                                        {% if value %}
+                                            {{ key }} :
+                                            <br>
+                                            {% for item in value %}
+                                                {{ value }}
+                                                <br>
+                                            {% endfor %}
+                                            <br>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% endfor %}                           </p>
+                        </div>
+                    </div>
+                {% else %}
+                    <h3>No Result for simple complexity code</h3>
+                {% endif %}
             </div>
+
             <div class="tab-pane" id="medium_search">
-                <div style="color:#00b385">TP:                </div>
-                    <textarea class="form-inline form-group">{ {% for data in chart_data.medium.tp_list %}{% if data > 0 %}{{ chart_data.medium.patterns_list| index:forloop.counter0}},{% endif %}{% endfor %} }
-                    </textarea>
-            <div style="color:#00b385">TP:                </div>
-                    <textarea class="form-inline form-group">{ {% for data in chart_data.medium.tp_list %}{% if data > 0 %}{{ chart_data.medium.patterns_list| index:forloop.counter0}},{% endif %}{% endfor %} }
-                    </textarea>
+                {% if search_data.medium.fn or search_data.medium.tp or search_data.medium.fp %}
+
+                    <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden">
+                        <h1 class="h1-result">FN</h1>
+                        <div class="result well">
+                            <p class="p-result">
+                                {% for pattern in search_data.medium.fn %}
+                                    {% for key, value in pattern.items %}
+                                        {% if value %}
+                                            {{ key }} :
+                                            <br>
+                                            {% for item in value %}
+                                                {{ value }}
+                                                <br>
+                                            {% endfor %}
+                                            <br>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% endfor %}
+                            </p>
+                        </div>
+                        <h1 class="h1-result">FP</h1>
+
+                        <div class="result well">
+                            <p class="p-result">
+                                {% for pattern in search_data.medium.fp %}
+                                    {% for key, value in pattern.items %}
+                                        {% if value %}
+                                            {{ key }} :
+                                            <br>
+                                            {% for item in value %}
+                                                {{ value }}
+                                                <br>
+                                            {% endfor %}
+                                            <br>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% endfor %}                   </p>
+                        </div>
+                        <h1 class="h1-result">TP</h1>
+
+                        <div class="result well">
+                            <p class="p-result">
+                                {% for pattern in search_data.medium.fp %}
+                                    {% for key, value in pattern.items %}
+                                        {% if value %}
+                                            {{ key }} :
+                                            <br>
+                                            {% for item in value %}
+                                                {{ value }}
+                                                <br>
+                                            {% endfor %}
+                                            <br>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% endfor %}                           </p>
+                        </div>
+                    </div>
+                {% else %}
+                    <h3>No Result for medium complexity code</h3>
+                {% endif %}
             </div>
             <div class="tab-pane" id="hard_search">
-                <h3>cherto pert vase sevomi</h3>
+                {% if search_data.hard.fn or search_data.hard.tp or search_data.hard.fp %}
+
+                    <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden">
+                        <h1 class="h1-result">FN</h1>
+                        <div class="result well">
+                            <p class="p-result">
+                                {% for pattern in search_data.hard.fn %}
+                                    {% for key, value in pattern.items %}
+                                        {% if value %}
+                                            {{ key }} :
+                                            <br>
+                                            {% for item in value %}
+                                                {{ value }}
+                                                <br>
+                                            {% endfor %}
+                                            <br>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% endfor %}
+                            </p>
+                        </div>
+                        <h1 class="h1-result">FP</h1>
+
+                        <div class="result well">
+                            <p class="p-result">
+                                {% for pattern in search_data.hard.fp %}
+                                    {% for key, value in pattern.items %}
+                                        {% if value %}
+                                            {{ key }} :
+                                            <br>
+                                            {% for item in value %}
+                                                {{ value }}
+                                                <br>
+                                            {% endfor %}
+                                            <br>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% endfor %}                   </p>
+                        </div>
+                        <h1 class="h1-result">TP</h1>
+
+                        <div class="result well">
+                            <p class="p-result">
+                                {% for pattern in search_data.hard.fp %}
+                                    {% for key, value in pattern.items %}
+                                        {% if value %}
+                                            {{ key }} :
+                                            <br>
+                                            {% for item in value %}
+                                                {{ value }}
+                                                <br>
+                                            {% endfor %}
+                                            <br>
+                                            <br>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                {% endfor %}                           </p>
+                        </div>
+                    </div>
+                {% else %}
+                    <h3>No Result for hard complexity code</h3>
+                {% endif %}
             </div>
         </div>
     </div>

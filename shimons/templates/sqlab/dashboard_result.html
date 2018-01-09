@@ -32,7 +32,7 @@
     {#    {% else %}#}
     {#        <div style="color: #e8e5e5;">Please use upload tab to upload files for your pattern detection algorithms</div>#}
     {#    {% endif %}#}
-    <div id="Tab" class="container">
+    <div id="Tab" class="container" style="width:97%">
         {% if req %}
             <ul class="nav nav-tabs">
                 <li class="active">
@@ -47,7 +47,61 @@
             <div class="tab-content ">
                 <div class="tab-pane active" id="simple">
                     {% if chart_data.simple.len != 0 %}
+                        <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden">
 
+                            <table class="table" style="width: 500px">
+                                <thead>
+                                <tr class="t-text">
+                                    <th scope="col">#</th>
+                                    <th scope="col">Evaluation criteria</th>
+                                    <th scope="col">Amount</th>
+
+                                </tr>
+                                </thead>
+                                <tbody class="t-text">
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>False Positive</td>
+                                    <td>{{ chart_data.simple.overall.fp }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>False Negative</td>
+                                    <td>{{ chart_data.simple.overall.fn }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>True Positive</td>
+                                    <td>{{ chart_data.simple.overall.tp }}</td>
+
+                                </tr>
+                                <th scope="row">4</th>
+                                <td>Accuracy</td>
+                                <td>{{ chart_data.simple.overall.acc | floatformat:2 }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">5</th>
+                                    <td>Precision</td>
+                                    <td>{{ chart_data.simple.overall.prc | floatformat:2 }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">6</th>
+                                    <td>Recall</td>
+                                    <td>{{ chart_data.simple.overall.rec | floatformat:2 }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">7</th>
+                                    <td>F-measure</td>
+                                    <td>{{ chart_data.simple.overall.fsc |floatformat:2 }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <canvas id="chart_simple" width="500" height="200"></canvas>
                         <script>
                             new Chart(document.getElementById("chart_simple"), {
@@ -80,7 +134,61 @@
                 </div>
                 <div class="tab-pane" id="medium">
                     {% if chart_data.medium.len != 0 %}
+                        <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden">
 
+                            <table class="table" style="width: 500px">
+                                <thead>
+                                <tr class="t-text">
+                                    <th scope="col">#</th>
+                                    <th scope="col">Evaluation criteria</th>
+                                    <th scope="col">Amount</th>
+
+                                </tr>
+                                </thead>
+                                <tbody class="t-text">
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>False Positive</td>
+                                    <td>{{ chart_data.medium.overall.fp }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>False Negative</td>
+                                    <td>{{ chart_data.medium.overall.fn }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>True Positive</td>
+                                    <td>{{ chart_data.medium.overall.tp }}</td>
+
+                                </tr>
+                                <th scope="row">4</th>
+                                <td>Accuracy</td>
+                                <td>{{ chart_data.medium.overall.acc | floatformat:2 }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">5</th>
+                                    <td>Precision</td>
+                                    <td>{{ chart_data.medium.overall.prc | floatformat:2 }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">6</th>
+                                    <td>Recall</td>
+                                    <td>{{ chart_data.medium.overall.rec | floatformat:2 }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">7</th>
+                                    <td>F-measure</td>
+                                    <td>{{ chart_data.medium.overall.fsc |floatformat:2 }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <canvas id="chart_medium" width="500" height="200"></canvas>
                         <script>
                             new Chart(document.getElementById("chart_medium"), {
@@ -113,7 +221,61 @@
                 </div>
                 <div class="tab-pane" id="hard">
                     {% if chart_data.hard.len != 0 %}
+                        <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden">
 
+                            <table class="table" style="width: 500px">
+                                <thead>
+                                <tr class="t-text">
+                                    <th scope="col">#</th>
+                                    <th scope="col">Evaluation criteria</th>
+                                    <th scope="col">Amount</th>
+
+                                </tr>
+                                </thead>
+                                <tbody class="t-text">
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>False Positive</td>
+                                    <td>{{ chart_data.hard.overall.fp }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>False Negative</td>
+                                    <td>{{ chart_data.hard.overall.fn }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>True Positive</td>
+                                    <td>{{ chart_data.hard.overall.tp }}</td>
+
+                                </tr>
+                                <th scope="row">4</th>
+                                <td>Accuracy</td>
+                                <td>{{ chart_data.hard.overall.acc | floatformat:2 }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">5</th>
+                                    <td>Precision</td>
+                                    <td>{{ chart_data.hard.overall.prc | floatformat:2 }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">6</th>
+                                    <td>Recall</td>
+                                    <td>{{ chart_data.hard.overall.rec | floatformat:2 }}</td>
+
+                                </tr>
+                                <tr>
+                                    <th scope="row">7</th>
+                                    <td>F-measure</td>
+                                    <td>{{ chart_data.hard.overall.fsc |floatformat:2 }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <canvas id="chart_hard" width="500" height="200"></canvas>
                         <script>
                             new Chart(document.getElementById("chart_hard"), {
