@@ -84,4 +84,35 @@ def compare_patterns(user_file_path, sys_file_path, resultPath, prefix=None):
         with open(os.path.join(resultPath, 'data.json'), 'w') as fp:
             json.dump(result_dict, fp)
 
-# compare_patterns(None, None)
+
+def summarize(file_path_set, output_path, filename):
+    pattern_dict = dict()
+    tp, fp, fn, tn = 0, 0, 0, 0
+
+    for file_path in file_path_set:
+        file = json.load(open(file_path))
+        for k, v in file.items():
+            if k == 'overall':
+                continue
+
+            if k in pattern_dict.keys():
+                pattern_dict[k].append(v)
+            else:
+                pattern_dict[k] = [v]
+
+            tp += v['tp']
+            fp += v['fp']
+            fn += v['fn']
+
+    acc = (tp + tn) / (tp + fn + fp + tn)
+    prc = tp / (tp + fp) if (tp + fp) > 0 else -1
+    rec = tp / (tp + fn) if (tp + fn) > 0 else -1
+    fsc = 2 * prc * rec / (prc + rec) if (prc + rec) > 0 else -1
+
+    pattern_dict['overall'] = {'tp': tp, 'fp': fp, 'fn': fn, 'acc': acc, 'prc': prc, 'rec': rec, 'fsc': fsc}
+    if not os.path.exists(output_path):
+        os.makedirs(output_path)
+    with open(os.path.join(output_path, filename), 'w') as writer:
+        json.dump(pattern_dict, writer, indent=' ')
+
+# summarize({'simple_data.json', 'simple_data (copy).json'}, 'summarize.json')

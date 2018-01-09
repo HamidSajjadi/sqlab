@@ -19,6 +19,31 @@ def save_file(file, path):
             destination.write(chunk)
 
 
+def proccess_analysis(request, req, final_file_path):
+    analysis = AnalysisResult.objects.filter(request=req.request_id)
+    file_set = {'simple': [], 'medium': [], 'hard': []}
+    for anal in analysis:  #:D
+        targetCode = TagetCode.objects.get(targetcode_id=anal.targetcode_id)
+        complexity = TargetCodeConfig.objects.get(complexity_id=targetCode.complexity_id)
+        result_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id),
+                                   'results',
+                                   'analysis_' + str(anal.request_id) + '_' + str(anal.targetcode_id),
+                                   )
+        compare.compare_patterns(anal.detectionresult_path, targetCode.patternsinfo_path, result_path,
+                                 prefix=complexity.complexity_level)
+        anal.analysisresult_path = os.path.join(result_path, complexity.complexity_level + '_data.json')
+        print(anal.detectionresult_path, anal)
+        file_set[complexity.complexity_level].append(anal.analysisresult_path)
+        # return None
+        anal.save()
+    if len(file_set['simple']) > 0:
+        compare.summarize(file_set['simple'], final_file_path, 'simple.json')
+    if len(file_set['medium']) > 0:
+        compare.summarize(file_set['medium'], final_file_path, 'medium.json')
+    if len(file_set['hard']) > 0:
+        compare.summarize(file_set['hard'], final_file_path, 'hard.json')
+
+
 @login_required()
 def dashboard(request):
     print(request)
@@ -42,72 +67,36 @@ def dashboard(request):
     tp_fn_list = []
     if req:
         if req.request_exe_status == "Done":
-            analysis = AnalysisResult.objects.filter(request=req.request_id)
-            for anal in analysis:  #:D
-                targetCode = TagetCode.objects.get(targetcode_id=anal.targetcode_id)
-                complexity = TargetCodeConfig.objects.get(complexity_id=targetCode.complexity_id)
-                result_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id),
-                                           'results',
-                                           'analysis_' + str(anal.request_id) + '_' + str(anal.targetcode_id),
-                                           )
-                compare.compare_patterns(anal.detectionresult_path, targetCode.patternsinfo_path, result_path,
-                                         prefix=complexity.complexity_level)
-                anal.analysisresult_path = os.path.join(result_path, complexity.complexity_level + '_data.json')
-                print(anal.detectionresult_path, anal)
-                # return None
-                anal.save()
-                # anal.analysisresult_path = os.path.join(result_path, 'data.json')
-                with open(anal.analysisresult_path, 'r') as json_file:
-                    data = json.load(json_file)
+            final_file_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results',
+                                           'overall')
+            if not os.path.exists(final_file_path):
+                proccess_analysis(request, req, final_file_path)
 
-                    for key in data:
-                        if key != "overall":
-                            if complexity.complexity_level == 'simple':
-                                if key not in simple['patterns_list']:
-                                    simple['patterns_list'].append(key)
-                                    simple['tp_list'].append(data[key]['tp'])
-                                    simple['tp_fn_list'].append(data[key]['tp'] + data[key]['fn'])
-                                else:
-                                    ind = simple['patterns_list'].index(key)
-                                    simple['tp_list'][ind] = simple['tp_list'][ind] + data[key]['tp']
-                                    simple['tp_fn_list'][ind] = simple['tp_fn_list'][ind] + data[key]['tp'] + data[key][
-                                        'fn']
-                            if complexity.complexity_level == 'medium':
-                                if key not in medium['patterns_list']:
-                                    medium['patterns_list'].append(key)
-                                    medium['tp_list'].append(data[key]['tp'])
-                                    medium['tp_fn_list'].append(data[key]['tp'] + data[key]['fn'])
-                                else:
-                                    ind = medium['patterns_list'].index(key)
-                                    medium['tp_list'][ind] = medium['tp_list'][ind] + data[key]['tp']
-                                    medium['tp_fn_list'][ind] = medium['tp_fn_list'][ind] + data[key]['tp'] + data[key][
-                                        'fn']
-                            if complexity.complexity_level == 'hard':
-                                if key not in hard['patterns_list']:
-                                    hard['patterns_list'].append(key)
-                                    hard['tp_list'].append(data[key]['tp'])
-                                    hard['tp_fn_list'].append(data[key]['tp'] + data[key]['fn'])
-                                else:
-                                    ind = medium['patterns_list'].index(key)
-                                    hard['tp_list'][ind] = hard['tp_list'][ind] + data[key]['tp']
-                                    hard['tp_fn_list'][ind] = hard['tp_fn_list'][ind] + data[key]['tp'] + data[key][
-                                        'fn']
-                                    # if key not in patterns_list:
-                                    #     patterns_list.append(key)
-                                    #     tp_list.append(data[key]['tp'])
-                                    #     tp_fn_list.append(data[key]['tp'] + data[key]['fn'])
-                                    # else:
-                                    #     ind = patterns_list.index(key)
-                                    #     tp_list[ind] = tp_list[ind] + data[key]['tp']
-                                    #     tp_fn_list[ind] = tp_fn_list[ind] + data[key]['tp'] + data[key]['fn']
-    simple['len'] = len(simple['patterns_list'])
-    medium['len'] = len(medium['patterns_list'])
-    hard['len'] = len(hard['patterns_list'])
-    req_chart_data = {'simple': simple, "medium": medium, "hard": hard}
-    print(req_chart_data)
-    return render(request, 'sqlab/dashboard.html',
-                  {'posts': posts, 'errors': error, 'req_form': pattern_form, 'req': req,
-                   'chart_data': req_chart_data})
+            simple_file = os.path.join(final_file_path, 'simple.json')
+            medium_file = os.path.join(final_file_path, 'medium.json')
+            hard_file = os.path.join(final_file_path, 'hard.json')
+            if os.path.isfile(simple_file):
+                with open(simple_file, 'r') as json_reader:
+                    simple_data = json.load(json_reader)
+                    print(simple_data)
+
+            if os.path.isfile(medium_file):
+                with open(medium_file, 'r') as json_reader:
+                    medium_data = json.load(json_reader)
+                    print(medium_data)
+
+            if os.path.isfile(hard_file):
+                with open(hard_file, 'r') as json_reader:
+                    hard_data = json.load(json_reader)
+                    print(hard_data)
+        simple['len'] = len(simple['patterns_list'])
+        medium['len'] = len(medium['patterns_list'])
+        hard['len'] = len(hard['patterns_list'])
+        req_chart_data = {'simple': simple, "medium": medium, "hard": hard}
+        print(req_chart_data)
+        # return render(request, 'sqlab/dashboard.html',
+        #               {'posts': posts, 'errors': error, 'req_form': pattern_form, 'req': req,
+        #                'chart_data': req_chart_data})
 
 
 @login_required()

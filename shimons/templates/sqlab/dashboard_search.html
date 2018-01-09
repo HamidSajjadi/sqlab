@@ -1,0 +1,38 @@
+{% load index %}
+<div id="search" class="container-fluid nav-content"
+     style="margin-right: 20px;margin-left: 20px;margin-top: 30px">
+    <div id="Tab" class="container">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#simple_search" data-toggle="tab" style="color:#00b385">simple</a>
+            </li>
+            <li><a href="#medium_search" data-toggle="tab" style="color:#00b385">medium</a>
+            </li>
+            <li><a href="#hard_search" data-toggle="tab" style="color:#00b385">hard</a>
+            </li>
+        </ul>
+
+        <div class="tab-content ">
+            <div class="tab-pane active" id="simple_search">
+                <div style="color:#00b385">TP:
+                    {% for data in chart_data.simple.tp_list %}
+                        {% if data > 0 %}
+                            {{ chart_data.simple.patterns_list | index:forloop.counter0 }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="tab-pane" id="medium_search">
+                <div style="color:#00b385">TP:                </div>
+                    <textarea class="form-inline form-group">{ {% for data in chart_data.medium.tp_list %}{% if data > 0 %}{{ chart_data.medium.patterns_list| index:forloop.counter0}},{% endif %}{% endfor %} }
+                    </textarea>
+            <div style="color:#00b385">TP:                </div>
+                    <textarea class="form-inline form-group">{ {% for data in chart_data.medium.tp_list %}{% if data > 0 %}{{ chart_data.medium.patterns_list| index:forloop.counter0}},{% endif %}{% endfor %} }
+                    </textarea>
+            </div>
+            <div class="tab-pane" id="hard_search">
+                <h3>cherto pert vase sevomi</h3>
+            </div>
+        </div>
+    </div>
+</div>
