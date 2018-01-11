@@ -6,7 +6,7 @@ from django.shortcuts import render
 from shimons.models import DashboardPost, Request, DetectionAlgorithm, RequestAttachPattern, AnalysisResult, TagetCode, \
     TargetCodeConfig, RequestSelectPattern
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from shimons.forms import RequestForm
 from shimons.addons import compare
 
@@ -80,7 +80,7 @@ def proccess_search_data(final_file_path):
             simple['fp'].append({pattern: []})
             for instance in data[pattern]:
                 if instance['tp'] > 0:
-                    simple['tp'][len(simple['tp'])-1][pattern].append(
+                    simple['tp'][len(simple['tp']) - 1][pattern].append(
                         {"System result": instance['System result'], "User result": instance['User result']})
                 if instance['fn'] > 0:
                     simple['fn'][len(simple['fn']) - 1][pattern].append(
@@ -98,7 +98,7 @@ def proccess_search_data(final_file_path):
             medium['fp'].append({pattern: []})
             for instance in data[pattern]:
                 if instance['tp'] > 0:
-                    medium['tp'][len(medium['tp'])-1][pattern].append(
+                    medium['tp'][len(medium['tp']) - 1][pattern].append(
                         {"System result": instance['System result'], "User result": instance['User result']})
                 if instance['fn'] > 0:
                     medium['fn'][len(medium['fn']) - 1][pattern].append(
@@ -116,7 +116,7 @@ def proccess_search_data(final_file_path):
             hard['fp'].append({pattern: []})
             for instance in data[pattern]:
                 if instance['tp'] > 0:
-                    hard['tp'][len(hard['tp'])-1][pattern].append(
+                    hard['tp'][len(hard['tp']) - 1][pattern].append(
                         {"System result": instance['System result'], "User result": instance['User result']})
                 if instance['fn'] > 0:
                     hard['fn'][len(hard['fn']) - 1][pattern].append(
@@ -182,7 +182,6 @@ def dashboard(request):
         hard['len'] = len(hard['patterns_list'])
         req_chart_data = {'simple': simple, "medium": medium, "hard": hard}
 
-
         return render(request, 'sqlab/dashboard.html',
                       {'posts': posts, 'errors': error, 'req_form': pattern_form, 'req': req,
                        'chart_data': req_chart_data,
@@ -245,3 +244,29 @@ def upload_algorithm(request):
             return HttpResponseRedirect('/dashboard/')
 
     return HttpResponseRedirect('/dashboard/')
+
+
+def download_result(request, level, req_id):
+    req = Request.objects.get(request_id=req_id)
+    print(req.request_id, req.user_id)
+    if req is None:
+        return HttpResponse("Request id wrong")
+    if req.user_id != request.user.id:
+        return HttpResponse("You are not authorized to access this file")
+    if req.request_exe_status != "Done":
+        return HttpResponse("Your request has not yet been proccesed")
+
+    final_file_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results',
+                                   'overall')
+    final_file = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results',
+                              'overall', level + '.json')
+
+    if not os.path.isfile(final_file):
+        proccess_analysis(request, req, final_file_path)
+        if not os.path.isfile(final_file):
+            return HttpResponse("This request has no result for {} level".format(level))
+
+    with open(final_file, 'r') as reader:
+        content = json.load(reader)
+        print(content)
+    return HttpResponse(json.dumps(content), content_type='application/json')

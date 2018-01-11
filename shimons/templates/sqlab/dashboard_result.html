@@ -1,37 +1,5 @@
 <div id="result" class="container-fluid nav-content"
      style="margin-right: 20px;margin-left: 20px;margin-top: 30px">
-    {#    {% if reqs %}#}
-    {#        {% for chart in chart_data %}#}
-    {#            <canvas id="chart_{{ forloop.counter }}" width="500" height="200"></canvas>#}
-    {#            <script>#}
-    {#                new Chart(document.getElementById("chart_{{ forloop.counter }}"), {#}
-    {#                    type: 'bar',#}
-    {#                    data: {#}
-    {#                        labels:{{ chart.patterns_labels |safe }},#}
-    {#                        datasets: [#}
-    {#                            {#}
-    {#                                label: "TP",#}
-    {#                                backgroundColor: "#3e95cd",#}
-    {#                                data: {{ chart.tps | safe }}#}
-    {#                            }, {#}
-    {#                                label: "TP+FN",#}
-    {#                                backgroundColor: "#8e5ea2",#}
-    {#                                data: {{ chart.tpfns | safe }}#}
-    {#                            }#}
-    {#                        ]#}
-    {#                    },#}
-    {#                    options: {#}
-    {#                        title: {#}
-    {#                            display: true,#}
-    {#                            text: 'Your detection algorithm results'#}
-    {#                        }#}
-    {#                    }#}
-    {#                });#}
-    {#            </script>#}
-    {#        {% endfor %}#}
-    {#    {% else %}#}
-    {#        <div style="color: #e8e5e5;">Please use upload tab to upload files for your pattern detection algorithms</div>#}
-    {#    {% endif %}#}
     <div id="Tab" class="container" style="width:97%">
         {% if req %}
             <ul class="nav nav-tabs">
@@ -47,6 +15,7 @@
             <div class="tab-content ">
                 <div class="tab-pane active" id="simple">
                     {% if chart_data.simple.len != 0 %}
+                        <a href="/dashboard/{{ req.request_id }}/simple-result.json">Download your result</a>
                         <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden">
 
                             <table class="table" style="width: 500px">
@@ -134,6 +103,7 @@
                 </div>
                 <div class="tab-pane" id="medium">
                     {% if chart_data.medium.len != 0 %}
+                        <a href="/dashboard/{{ req.request_id }}/medium-result.json">Download your result</a>
                         <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden">
 
                             <table class="table" style="width: 500px">
@@ -221,6 +191,7 @@
                 </div>
                 <div class="tab-pane" id="hard">
                     {% if chart_data.hard.len != 0 %}
+                        <a href="/dashboard/{{ req.request_id }}/hard-result.json">Download your result</a>
                         <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden">
 
                             <table class="table" style="width: 500px">

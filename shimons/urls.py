@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.views.generic import RedirectView
 
 from shimons.Views import user_views, general_views, dashbord_views
@@ -26,6 +26,8 @@ urlpatterns = [
     path('login/', user_views.login_user, name='login'),
     path('dashboard/', dashbord_views.dashboard, name='dashboard'),
     path('dashboard/upload/', dashbord_views.upload_algorithm, name='algorithm upload'),
+    re_path('dashboard/(?P<req_id>[0-9]+)/(?P<level>\\bsimple\\b|\\bmedium\\b|\\bhard\\b)-result.json',
+            dashbord_views.download_result, name='download result'),
     path('index/', general_views.index, name='index'),
     path(r'', RedirectView.as_view(url='index/')),
 
