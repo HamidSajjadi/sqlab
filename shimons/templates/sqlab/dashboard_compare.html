@@ -1,0 +1,120 @@
+{% load get_item %}
+
+<div id="compare" class="container-fluid nav-content"
+     style="margin-right: 20px;margin-left: 20px;margin-top: 30px">
+    {% if not compare_chart_data %}
+        <form method="get" action="/dashboard/#compare">
+            <div class="form-group">
+                <label style="color:#d0cdcd;" for="{{ compare_form.request.id_for_label }}">Algorithm
+                    Files:</label>
+                {{ compare_form.request }}
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary">Compare
+            </button>
+        </form>
+    {% else %}
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#simple_compare" data-toggle="tab" style="color:#00b385">simple</a>
+            </li>
+            <li><a href="#medium_compare" data-toggle="tab" style="color:#00b385">medium</a>
+            </li>
+            <li><a href="#hard_compare" data-toggle="tab" style="color:#00b385">hard</a>
+            </li>
+        </ul>
+
+        <div class="tab-content ">
+            {% for level, data in compare_chart_data.items %}
+                <div class="tab-pane {% if level == 'simple' %}active{% endif %}" id="{{ level }}_compare">
+                    <table class="table" style="width: 500px">
+                        <thead>
+                        <tr class="t-text">
+                            <th scope="col">#</th>
+                            <th scope="col">Evaluation criteria</th>
+                            <th scope="col">Request {{ compare_req_id }} Result</th>
+                            <th scope="col">Your Result</th>
+                        </tr>
+                        </thead>
+                        <tbody class="t-text">
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>False Positive</td>
+                            <td>{{ data.overall.fp }}</td>
+                            <td {% if data.overall.fp < chart_data|getitem:level|getitem:"overall"|getitem:"fp" %}
+                                style="color:red;"
+                            {% elif data.overall.fp > chart_data|getitem:level|getitem:"overall"|getitem:"fp" %}
+                                style="color:green;"
+                            {% endif %}>{{ chart_data | getitem:level | getitem:"overall" | getitem:"fp" }}</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>False Negative</td>
+                            <td>{{ data.overall.fn }}</td>
+                            <td {% if data.overall.fn < chart_data|getitem:level|getitem:"overall"|getitem:"fn" %}
+                                style="color:red;"
+                            {% elif data.overall.fn > chart_data|getitem:level|getitem:"overall"|getitem:"fn" %}
+                                style="color:green;"
+                            {% endif %}>{{ chart_data | getitem:level | getitem:"overall" | getitem:"fn" }}</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>True Positive</td>
+                            <td>{{ data.overall.tp }}</td>
+                            <td{% if data.overall.tp < chart_data|getitem:level|getitem:"overall"|getitem:"tp" %}
+                                style="color:green;"
+                            {% elif data.overall.tp > chart_data|getitem:level|getitem:"overall"|getitem:"tp" %}
+                                style="color:red;"
+                            {% endif %}>{{ chart_data | getitem:level | getitem:"overall" | getitem:"tp" }}</td>
+                        </tr>
+                        <th scope="row">4</th>
+                        <td>Accuracy</td>
+                        <td>{{ data.overall.acc | floatformat:2 }}</td>
+                        <td{% if data.overall.acc < chart_data|getitem:level|getitem:"overall"|getitem:"acc" %}
+                                style="color:green;"
+                            {% elif data.overall.acc > chart_data|getitem:level|getitem:"overall"|getitem:"acc" %}
+                                style="color:red;"
+                            {% endif %}>{{ chart_data | getitem:level | getitem:"overall" | getitem:"acc" | floatformat:2 }}</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row">5</th>
+                            <td>Precision</td>
+                            <td>{{ data.overall.prc | floatformat:2 }}</td>
+                            <td{% if data.overall.prc < chart_data|getitem:level|getitem:"overall"|getitem:"prc" %}
+                                style="color:green;"
+                            {% elif data.overall.prc > chart_data|getitem:level|getitem:"overall"|getitem:"prc" %}
+                                style="color:red;"
+                            {% endif %}>{{ chart_data | getitem:level | getitem:"overall" | getitem:"prc" | floatformat:2 }}</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row">6</th>
+                            <td>Recall</td>
+                            <td>{{ data.overall.rec | floatformat:2 }}</td>
+                            <td{% if data.overall.rec < chart_data|getitem:level|getitem:"overall"|getitem:"rec" %}
+                                style="color:green;"
+                            {% elif data.overall.rec > chart_data|getitem:level|getitem:"overall"|getitem:"rec" %}
+                                style="color:red;"
+                            {% endif %}>{{ chart_data | getitem:level | getitem:"overall" | getitem:"rec" | floatformat:2 }}</td>
+
+                        </tr>
+                        <tr>
+                            <th scope="row">7</th>
+                            <td>F-measure</td>
+                            <td>{{ data.overall.fsc | floatformat:2 }}</td>
+                            <td{% if data.overall.fsc < chart_data|getitem:level|getitem:"overall"|getitem:"fsc" %}
+                                style="color:green;"
+                            {% elif data.overall.fsc > chart_data|getitem:level|getitem:"overall"|getitem:"fsc" %}
+                                style="color:red;"
+                            {% endif %}>{{ chart_data | getitem:level | getitem:"overall" | getitem:"fsc" | floatformat:2 }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>

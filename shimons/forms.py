@@ -12,7 +12,6 @@ class UserForm(forms.ModelForm):
     field = forms.ModelChoiceField(queryset=models.Field.objects.all(),
                                    widget=forms.Select(attrs={'class': 'form-control', "placeholder": "Field"}))
     email = forms.CharField(widget=forms.EmailInput(attrs={'class': 'form-control', "placeholder": "Email"}))
-    # password = forms.PasswordInput(attrs={'required': True, 'class': 'form-control'})
     password = forms.CharField(max_length=32,
                                widget=forms.PasswordInput(attrs={'class': 'form-control', "placeholder": "Password"}))
 
@@ -55,3 +54,9 @@ class RequestForm(forms.Form):
             attrs={'multiple': True, 'required': True, 'class': 'form-control', 'style': 'color:#d0cdcd;',
                    'accept': '.txt',
                    'name': 'pattern-files'}))
+
+
+class CompareRequest(forms.Form):
+    request = forms.ModelChoiceField(queryset=models.Request.objects.all(),
+                                     widget=forms.Select(
+                                         attrs={'class': 'form-control', "placeholder": "Request to Compare"}))

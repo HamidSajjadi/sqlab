@@ -1,5 +1,4 @@
 import datetime
-
 import os
 import json
 from django.shortcuts import render
@@ -7,7 +6,7 @@ from shimons.models import DashboardPost, Request, DetectionAlgorithm, RequestAt
     TargetCodeConfig, RequestSelectPattern
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
-from shimons.forms import RequestForm
+from shimons.forms import RequestForm, CompareRequest
 from shimons.addons import compare
 
 
@@ -19,13 +18,13 @@ def save_file(file, path):
             destination.write(chunk)
 
 
-def proccess_analysis(request, req, final_file_path):
+def proccess_analysis(req, final_file_path):
     analysis = AnalysisResult.objects.filter(request=req.request_id)
     file_set = {'simple': [], 'medium': [], 'hard': []}
     for anal in analysis:  #:D
         targetCode = TagetCode.objects.get(targetcode_id=anal.targetcode_id)
         complexity = TargetCodeConfig.objects.get(complexity_id=targetCode.complexity_id)
-        result_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id),
+        result_path = os.path.join("user_" + str(req.user_id), "req_" + str(req.request_id),
                                    'results',
                                    'analysis_' + str(anal.request_id) + '_' + str(anal.targetcode_id),
                                    )
@@ -127,6 +126,34 @@ def proccess_search_data(final_file_path):
         return {'simple': simple, 'medium': medium, 'hard': hard}
 
 
+def get_chart_data_from_folder(final_file_path):
+    simple = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
+    medium = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
+    hard = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
+    simple_file = os.path.join(final_file_path, 'simple.json')
+    medium_file = os.path.join(final_file_path, 'medium.json')
+    hard_file = os.path.join(final_file_path, 'hard.json')
+    if os.path.isfile(simple_file):
+        with open(simple_file, 'r') as json_reader:
+            simple_data = json.load(json_reader)
+            simple = proccess_chart_data(simple_data)
+
+    if os.path.isfile(medium_file):
+        with open(medium_file, 'r') as json_reader:
+            medium_data = json.load(json_reader)
+            medium = proccess_chart_data(medium_data)
+
+    if os.path.isfile(hard_file):
+        with open(hard_file, 'r') as json_reader:
+            hard_data = json.load(json_reader)
+            hard = proccess_chart_data(hard_data)
+
+    simple['len'] = len(simple['patterns_list'])
+    medium['len'] = len(medium['patterns_list'])
+    hard['len'] = len(hard['patterns_list'])
+    return {'simple': simple, "medium": medium, "hard": hard}
+
+
 @login_required()
 def dashboard(request):
     if request.GET.get('errors-field'):
@@ -135,57 +162,55 @@ def dashboard(request):
         error = None
     posts = DashboardPost.objects.all()
     pattern_form = RequestForm()
+    compare_form = CompareRequest()
+    compare_form.fields["request"].queryset = Request.objects.filter(system_exe_status='100')
     req = Request.objects.filter(user=request.user.id).order_by('-request_date', '-request_id')
     if len(req) == 0:
         req = None
     else:
         req = req[0]
-    patterns_list = []
     # 3 types of complexity have different results
-    simple = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
-    medium = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
-    hard = {'tp_list': [], 'tp_fn_list': [], 'patterns_list': [], 'len': 0}
+
     simple_search = {'fn': [], 'tp': [], 'fp': []}
     medium_search = {'fn': [], 'tp': [], 'fp': []}
     hard_search = {'fn': [], 'tp': [], 'fp': []}
     search_data = {'simple': simple_search, 'medium': medium_search, 'hard': hard_search}
+    req_chart_data = []
+    compare_chart_data = []
+    compare_req_id = ''
     if req:
-        if req.request_exe_status == "Done":
+        if req.system_exe_status == '100':
+
             final_file_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results',
                                            'overall')
             if not os.path.exists(final_file_path):
-                proccess_analysis(request, req, final_file_path)
+                proccess_analysis(req, final_file_path)
 
-            simple_file = os.path.join(final_file_path, 'simple.json')
-            medium_file = os.path.join(final_file_path, 'medium.json')
-            hard_file = os.path.join(final_file_path, 'hard.json')
+            comp_req_id = request.GET.get("request")
+            if comp_req_id:
+                comp_req = Request.objects.get(request_id=comp_req_id)
+                if comp_req and comp_req.system_exe_status == '100':
+                    comp_final_path = os.path.join("user_" + str(comp_req.user_id),
+                                                   "req_" + str(comp_req.request_id), 'results',
+                                                   'overall')
 
-            if os.path.isfile(simple_file):
-                with open(simple_file, 'r') as json_reader:
-                    simple_data = json.load(json_reader)
-                    simple = proccess_chart_data(simple_data)
+                    if not os.path.exists(comp_final_path):
+                        proccess_analysis(comp_req, comp_final_path)
 
-            if os.path.isfile(medium_file):
-                with open(medium_file, 'r') as json_reader:
-                    medium_data = json.load(json_reader)
-                    medium = proccess_chart_data(medium_data)
+                    compare_chart_data = get_chart_data_from_folder(comp_final_path)
+                    # compare_chart_data.update({"req_id": comp_req_id})
 
-            if os.path.isfile(hard_file):
-                with open(hard_file, 'r') as json_reader:
-                    hard_data = json.load(json_reader)
-                    hard = proccess_chart_data(hard_data)
-
+            req_chart_data = get_chart_data_from_folder(final_file_path)
             search_data = proccess_search_data(final_file_path)
-
-        simple['len'] = len(simple['patterns_list'])
-        medium['len'] = len(medium['patterns_list'])
-        hard['len'] = len(hard['patterns_list'])
-        req_chart_data = {'simple': simple, "medium": medium, "hard": hard}
-
+        print('req,', req_chart_data)
+        print('comp', compare_chart_data)
         return render(request, 'sqlab/dashboard.html',
                       {'posts': posts, 'errors': error, 'req_form': pattern_form, 'req': req,
                        'chart_data': req_chart_data,
-                       'search_data': search_data})
+                       'search_data': search_data,
+                       'compare_form': compare_form,
+                       'compare_chart_data': compare_chart_data,
+                       'compare_req_id': comp_req_id})
 
 
 @login_required()
@@ -246,6 +271,7 @@ def upload_algorithm(request):
     return HttpResponseRedirect('/dashboard/')
 
 
+@login_required()
 def download_result(request, level, req_id):
     req = Request.objects.get(request_id=req_id)
     print(req.request_id, req.user_id)
@@ -253,7 +279,7 @@ def download_result(request, level, req_id):
         return HttpResponse("Request id wrong")
     if req.user_id != request.user.id:
         return HttpResponse("You are not authorized to access this file")
-    if req.request_exe_status != "Done":
+    if req.system_exe_status != '100':
         return HttpResponse("Your request has not yet been proccesed")
 
     final_file_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results',
@@ -262,11 +288,9 @@ def download_result(request, level, req_id):
                               'overall', level + '.json')
 
     if not os.path.isfile(final_file):
-        proccess_analysis(request, req, final_file_path)
+        proccess_analysis(req, final_file_path)
         if not os.path.isfile(final_file):
             return HttpResponse("This request has no result for {} level".format(level))
 
-    with open(final_file, 'r') as reader:
-        content = json.load(reader)
-        print(content)
-    return HttpResponse(json.dumps(content), content_type='application/json')
+    tf = open(final_file, 'r')
+    return HttpResponse(tf, content_type='application/json')

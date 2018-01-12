@@ -4,8 +4,5 @@ register = template.Library()
 
 
 @register.filter
-def index(sequence, position):
-    return sequence[position]
-
-
-
+def getitem(dictionary, key):
+    return dictionary.get(key)
