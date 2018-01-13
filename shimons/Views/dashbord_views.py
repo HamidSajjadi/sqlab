@@ -177,7 +177,7 @@ def dashboard(request):
     search_data = {'simple': simple_search, 'medium': medium_search, 'hard': hard_search}
     req_chart_data = []
     compare_chart_data = []
-    compare_req_id = ''
+    comp_req_id = None
     if req:
         if req.system_exe_status == '100':
 
