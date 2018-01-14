@@ -23,10 +23,10 @@
             </li>
         </ul>
 
-        <div class="tab-content ">
+        <div class="tab-content" align="center">
             {% for level, data in compare_chart_data.items %}
                 <div class="tab-pane {% if level == 'simple' %}active{% endif %}" id="{{ level }}_compare">
-                    <table class="table" style="width: 500px">
+                    <table class="re-tabmargin table" style="width: 500px">
                         <thead>
                         <tr class="t-text">
                             <th scope="col">#</th>

@@ -1,5 +1,22 @@
 @import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css');
 
+.up-margin {
+    margin-top: 5%;
+    width: 90%;
+}
+.re-tabmargin{
+    margin-top:6%;
+}
+.re-canmargin{
+    margin-top:6%;
+}
+
+.up-button {
+    margin-top: 20px;
+    background-color: #00b385;
+    border-color: #00a77b;
+}
+
 .t-text {
     color: #d0cdcd;
     margin-top: 20px;
