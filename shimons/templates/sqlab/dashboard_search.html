@@ -3,18 +3,16 @@
      style="margin-right: 20px;margin-left: 20px;margin-top: 30px">
     <div id="Tab" class="container" style="width:97%">
         <ul class="nav nav-tabs">
-            <li class="active">
-                <a href="#simple_search" data-toggle="tab" style="color:#00b385">simple</a>
-            </li>
-            <li><a href="#medium_search" data-toggle="tab" style="color:#00b385">medium</a>
-            </li>
-            <li><a href="#hard_search" data-toggle="tab" style="color:#00b385">hard</a>
-            </li>
-        </ul>
+                {% for level in search_data|dictsort:0 %}
+                    <li {% if forloop.counter0 == 0 %}class="active"{% endif %}>
+                        <a href="#{{ level }}_search" data-toggle="tab" style="color:#00b385">{{ level }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
 
         <div class="tab-content ">
-            {% for level, data in search_data.items %}
-                <div class="tab-pane {% if level == 'simple' %}
+            {% for level, data in search_data.items  %}
+                <div class="tab-pane {% if forloop.counter0 == 0%}
                     active
                     {% endif %}" id="{{ level }}_search">
                     {% if data.fn or data.tp or data.fp %}

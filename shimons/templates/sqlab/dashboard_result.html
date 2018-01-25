@@ -3,22 +3,19 @@
     <div id="Tab" class="container" style="width:97%">
         {% if req %}
             <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="#simple" data-toggle="tab" style="color:#00b385">simple</a>
-                </li>
-                <li><a href="#medium" data-toggle="tab" style="color:#00b385">medium</a>
-                </li>
-                <li><a href="#hard" data-toggle="tab" style="color:#00b385">hard</a>
-                </li>
+                {% for level in chart_data|dictsort:0 %}
+                    <li {% if forloop.counter0 == 0 %}class="active"{% endif %}>
+                        <a href="#{{ level }}" data-toggle="tab" style="color:#00b385">{{ level }}</a>
+                    </li>
+                {% endfor %}
             </ul>
 
-            <div class="tab-content"  align="center">
+            <div class="tab-content" align="center">
                 {% for level, data in chart_data.items %}
-                    <div class="tab-pane {% if level == 'simple' %}
+                    <div class="tab-pane {% if forloop.counter0 == 0 %}
                     active
                     {% endif %}" id="{{ level }}">
                         {% if data.len != 0 %}
-
                             <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden">
 
                                 <table class="re-tabmargin table" style="width: 500px">
@@ -73,10 +70,11 @@
                                     </tr>
                                     </tbody>
                                 </table>
-                             <canvas id="chart_{{ level }}" width="500" height="200"></canvas>
+                                <canvas id="chart_{{ level }}" width="500" height="200"></canvas>
 
-                            <a class="btn btn-primary" style="background-color: #00b385;border-color:#00a77b" href="/dashboard/{{ req.request_id }}/{{ level }}-result.json">Download
-                                your result</a>
+                                <a class="btn btn-primary" style="background-color: #00b385;border-color:#00a77b"
+                                   href="/dashboard/{{ req.request_id }}/{{ level }}-result.json">Download
+                                    your result</a>
                             </div>
 
                             <script>
