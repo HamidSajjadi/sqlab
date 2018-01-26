@@ -20,9 +20,11 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <p
-                                                style="margin-top: 20px;margin-left: 40px;margin-right:30px;color: #d0cdcd;font-size:medium;font-family: yekan">{{ content | safe | truncatechars:120 }}
+
+                                        <div class="post">
+                                        <p >{{ content | safe | truncatechars:120 }}
                                         </p>
+                                            </div>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -40,7 +42,7 @@
                         <div class="modal fade" id="modal_{{ forloop.counter }}" role="dialog" style="direction: ltr;">
                             <div class="modal-dialog">
 
-                                <div class="modal-content">
+                                <div class="modal-content" id="myDiv">
 
                                     <div class="modal-header text-center" style="background-color: #eee">
                                         <button type="button" class="close" data-dismiss="modal"
