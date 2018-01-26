@@ -181,10 +181,12 @@ def save_final_result(req, category):
     tp_list = []
     fn_list = []
     fp_list = []
+    fsc_list = []
     for key in data:
         tp_list.append(data[key]['overall']['tp'])
         fn_list.append(data[key]['overall']['fn'])
         fp_list.append(data[key]['overall']['fp'])
+        fsc_list.append(data[key]['overall']['fsc'])
     final_res = FinalResult()
     final_res.request = req
     final_res.category = category
@@ -194,6 +196,7 @@ def save_final_result(req, category):
     final_res.fn_avg = sum(fn_list) / len(fn_list)
     final_res.fp_avg = sum(fp_list) / len(fp_list)
     final_res.tn_avg = 0
+    final_res.fm_avg = sum(fsc_list) / len(fsc_list)
     final_res.rank = 100
     final_res.save()
 

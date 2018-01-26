@@ -31,15 +31,15 @@
                     <div class="row">
                         <div class="col-md-12">
                             <p
-                               style="color:#d0cdcd;margin-left: 20px;font-size: x-large;font-family: yekan">
-                                {{ post.title }}
+                               style="color:#d0cdcd;margin-left: 20px;font-size: x-large">
+                                {{ post.title | safe }}
                             </p>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
                                 <p
-                                   style="color: #00b385;margin-left: 35px;font-size: large;font-family: yekan">
-                                    {{ post.subtitle }}
+                                   style="color: #00b385;margin-left: 35px;font-size: large;">
+                                    {{ post.subtitle | safe }}
                                 </p>
                             </div>
                         </div>
@@ -47,7 +47,7 @@
                             <div class="col-md-12">
                                 <p
                                    style="margin-top: 20px;margin-left: 40px;margin-right:30px;color: #d0cdcd;font-size:medium;font-family: yekan">
-                                    {{ post.content|truncatechars:120 }}
+                                    {{ post.content|truncatechars:120|safe }}
                                 </p>
                             </div>
                         </div>
@@ -72,11 +72,11 @@ More Info
                     <button type="button" class="close" data-dismiss="modal"
                             style="color: darkred">&times;</button>
                     <h4 class="modal-title" style="margin: 0 auto;display: block;">
-                        {{ post.title }}
+                        {{ post.title | safe }}
                     </h4>
                 </div>
                 <div class="modal-body " style="max-width: 80%;margin: 0 auto;">
-                    {{ post.content }}
+                    {{ post.content | safe }}
                 </div>
                 <div class="modal-footer text-center">
                     <a class=" btn btn-success btn-lg" data-dismiss="modal"

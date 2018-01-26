@@ -59,6 +59,8 @@ class FinalResult(models.Model):
     fp_avg = models.FloatField(db_column='FP_avg')  # Field name made lowercase.
     tn_avg = models.FloatField(db_column='TN_avg')  # Field name made lowercase.
     tp_avg = models.FloatField(db_column='TP_avg')  # Field name made lowercase.
+    fm_avg = models.FloatField(db_column='FM_avg')  # Field name made lowercase.
+
     execution_times = models.IntegerField()
     category = models.CharField(max_length=255)
     rank = models.IntegerField()
@@ -111,10 +113,9 @@ class SystemConfig(models.Model):
 
 class SystemPatterns(models.Model):
     pattern_id = models.AutoField(primary_key=True)
-    name = models.CharField(db_column="pattern_name",max_length=255, blank=True, null=True)
+    name = models.CharField(db_column="pattern_name", max_length=255, blank=True, null=True)
     category = models.CharField(max_length=255)
     pattern_family = models.CharField(max_length=255)
-
 
     def __str__(self):
         return self.name
