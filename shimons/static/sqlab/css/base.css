@@ -11,7 +11,17 @@
     overflow-x: hidden;
     background-color: #222222;
 }
+#post-a a{
+    color: #00a77b;!important;
 
+}
+.post >p{
+      margin-top: 20px;!important;
+    margin-left: 40px;!important;
+    margin-right:30px;!important;
+    color: #d0cdcd;!important;
+    font-size:large;!important;
+}
 /****/
 
 /* The Modal (background) */
