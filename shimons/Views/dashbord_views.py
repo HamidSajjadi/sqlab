@@ -6,8 +6,9 @@ from shimons.forms import RequestForm, CompareRequest
 from shimons.Views.view_misc import get_chart_data_from_folder, save_file, \
     proccess_analysis, proccess_search_data
 from shimons.models import DashboardPost, Request, DetectionAlgorithm, RequestAttachPattern, \
-    RequestSelectPattern
-from Documentations import Documentation
+    RequestSelectPattern, FinalResult
+from shimons.Documentations import Documentation
+
 
 @login_required()
 def dashboard(request):
@@ -17,6 +18,8 @@ def dashboard(request):
         error = None
     posts = DashboardPost.objects.all()
     pattern_form = RequestForm()
+    my_rank = None
+    compared_rank = None
     compare_form = CompareRequest()
     compare_form.fields["request"].queryset = Request.objects.filter(system_exe_status='100')
     req = Request.objects.filter(user=request.user.id).order_by('-request_date', '-request_id')
@@ -47,9 +50,13 @@ def dashboard(request):
 
                     if not os.path.exists(comp_final_path):
                         proccess_analysis(comp_req)
+                    my_result = FinalResult.objects.get(request=req, category="BENCHMARK")
+                    compared_result = FinalResult.objects.get(request=comp_req,category="BENCHMARK")
+
+                    my_rank = FinalResult.objects.filter(fm_avg__gt=my_result.fm_avg).count() + 1
+                    compared_rank = FinalResult.objects.filter(fm_avg__gt=compared_result.fm_avg).count() + 1
 
                     compare_chart_data = get_chart_data_from_folder(comp_final_path)
-                    # compare_chart_data.update({"req_id": comp_req_id})
 
             req_chart_data = get_chart_data_from_folder(ordinal_file_path)
             search_data = proccess_search_data(ordinal_file_path)
@@ -60,6 +67,8 @@ def dashboard(request):
                    'documentations': Documentation,
                    'search_data': search_data,
                    'compare_form': compare_form,
+                   'my_rank': my_rank,
+                   'their_rank': compared_rank,
                    'compare_chart_data': compare_chart_data,
                    'compare_req_id': comp_req_id})
 

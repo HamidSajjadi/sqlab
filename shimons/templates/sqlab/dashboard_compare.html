@@ -42,6 +42,18 @@
                                     <tbody class="t-text">
                                     <tr>
                                         <th scope="row">1</th>
+                                        <td>Ranking</td>
+                                        <td>{{ their_rank }}</td>
+                                        <td
+                                                {% if their_rank < my_rank %}
+                                                    style="color:red;"
+                                                {% elif their_rank > my_rank %}
+                                                    style="color:green;"
+                                                {% endif %}>{{ my_rank }}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">1</th>
                                         <td>False Positive</td>
                                         <td>{{ data.overall.fp }}</td>
                                         <td
