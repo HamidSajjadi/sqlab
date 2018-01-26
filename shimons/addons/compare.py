@@ -108,7 +108,6 @@ def summarize(file_path_set, output_path, filename):
     prc = tp / (tp + fp) if (tp + fp) > 0 else -1
     rec = tp / (tp + fn) if (tp + fn) > 0 else -1
     fsc = 2 * prc * rec / (prc + rec) if (prc + rec) > 0 else -1
-
     pattern_dict['overall'] = {'tp': tp, 'fp': fp, 'fn': fn, 'acc': acc, 'prc': prc, 'rec': rec, 'fsc': fsc}
     if not os.path.exists(output_path):
         os.makedirs(output_path)

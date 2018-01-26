@@ -60,6 +60,7 @@ class FinalResult(models.Model):
     tn_avg = models.FloatField(db_column='TN_avg')  # Field name made lowercase.
     tp_avg = models.FloatField(db_column='TP_avg')  # Field name made lowercase.
     execution_times = models.IntegerField()
+    category = models.CharField(max_length=255)
     rank = models.IntegerField()
     request = models.ForeignKey('Request', models.DO_NOTHING, blank=True, null=True)
 
@@ -110,8 +111,10 @@ class SystemConfig(models.Model):
 
 class SystemPatterns(models.Model):
     pattern_id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=255, blank=True, null=True)
-    patterns_dir = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(db_column="pattern_name",max_length=255, blank=True, null=True)
+    category = models.CharField(max_length=255)
+    pattern_family = models.CharField(max_length=255)
+
 
     def __str__(self):
         return self.name
@@ -123,15 +126,14 @@ class SystemPatterns(models.Model):
 
 
 class TagetCode(models.Model):
-    targetcode_id = models.AutoField(db_column='targetCode_id', primary_key=True,
-                                     max_length=255)  # Field name made lowercase.
+    targetcode_id = models.AutoField(db_column='targetCode_id', primary_key=True)  # Field name made lowercase.
     classdiagram_path = models.CharField(db_column='classDiagram_path', max_length=255, blank=True,
                                          null=True)  # Field name made lowercase.
     patternsinfo_path = models.CharField(db_column='patternsInfo_path', max_length=255, blank=True,
                                          null=True)  # Field name made lowercase.
     targetcode_path = models.CharField(db_column='targetCode_path', max_length=255, blank=True,
                                        null=True)  # Field name made lowercase.
-    complexity = models.ForeignKey('TargetCodeConfig', models.DO_NOTHING, blank=True, null=True)
+    config = models.ForeignKey('TargetCodeConfig', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         # managed = False
@@ -139,9 +141,10 @@ class TagetCode(models.Model):
 
 
 class TargetCodeConfig(models.Model):
-    complexity_id = models.AutoField(primary_key=True)
+    config_id = models.AutoField(primary_key=True)
     mupi = models.IntegerField(db_column='MUPI')  # Field name made lowercase.
     complexity_level = models.CharField(max_length=255)
+    category = models.CharField(max_length=255)
     concrete_rate = models.FloatField()
     execution_times = models.IntegerField()
     interface_rate = models.FloatField()

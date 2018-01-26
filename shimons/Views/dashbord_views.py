@@ -1,171 +1,13 @@
-import datetime
-import os
-import json
+import datetime, os
 from django.shortcuts import render
-from shimons.models import DashboardPost, Request, DetectionAlgorithm, RequestAttachPattern, AnalysisResult, TagetCode, \
-    TargetCodeConfig, RequestSelectPattern
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 from shimons.forms import RequestForm, CompareRequest
-from shimons.addons import compare
-
-
-def save_file(file, path):
-    if not os.path.exists(path):
-        os.makedirs(path)
-    with open(os.path.join(path, file.name), 'wb+') as destination:
-        for chunk in file.chunks():
-            destination.write(chunk)
-
-
-def proccess_analysis(req, final_file_path):
-    analysis = AnalysisResult.objects.filter(request=req.request_id)
-    file_set = {}
-    for anal in analysis:  #:D
-        targetCode = TagetCode.objects.get(targetcode_id=anal.targetcode_id)
-        complexity = TargetCodeConfig.objects.get(complexity_id=targetCode.complexity_id)
-        result_path = os.path.join("user_" + str(req.user_id), "req_" + str(req.request_id),
-                                   'results',
-                                   'analysis_' + str(anal.request_id) + '_' + str(anal.targetcode_id),
-                                   )
-        compare.compare_patterns(anal.detectionresult_path, targetCode.patternsinfo_path, result_path,
-                                 prefix=complexity.complexity_level)
-        anal.analysisresult_path = os.path.join(result_path, complexity.complexity_level + '_data.json')
-        if complexity.complexity_level in file_set:
-            file_set[complexity.complexity_level].append(anal.analysisresult_path)
-        else:
-            file_set.update({complexity.complexity_level: [anal.analysisresult_path]})
-        # return None
-        anal.save()
-    for level in file_set:
-        compare.summarize(file_set[level], final_file_path, level + '.json')
-        # if len(file_set['simple']) > 0:
-        #     compare.summarize(file_set['simple'], final_file_path, 'simple.json')
-        # if len(file_set['medium']) > 0:
-        #     compare.summarize(file_set['medium'], final_file_path, 'medium.json')
-        # if len(file_set['hard']) > 0:
-        #     compare.summarize(file_set['hard'], final_file_path, 'hard.json')
-
-
-def proccess_chart_data(raw_data):
-    tp_list = []
-    tp_fn_list = []
-    patterns_list = []
-    overall = []
-    for pattern in raw_data:
-        if pattern == 'overall':
-            overall = raw_data[pattern]
-            continue
-        patterns_list.append(pattern)
-        tp_list.append(0)
-        tp_fn_list.append(0)
-        for instannce in raw_data[pattern]:
-            tp_list[patterns_list.index(pattern)] += instannce['tp']
-            tp_fn_list[patterns_list.index(pattern)] += (instannce['tp'] + instannce['fn'])
-    return {'tp_list': tp_list, 'tp_fn_list': tp_fn_list, 'patterns_list': patterns_list, 'overall': overall,
-            'len': len(patterns_list)}
-
-
-def proccess_search_data(final_file_path):
-    return_data = {}
-    for file in os.listdir(final_file_path):
-        if file.endswith(".json"):
-            return_data.update({file.split('.')[0]: {'fn': [], 'tp': [], 'fp': []}})
-            temp = {'fn': [], 'tp': [], 'fp': []}
-            data = json.load(open(os.path.join(final_file_path, file), 'r'))
-            for pattern in data:
-                if pattern == 'overall':
-                    continue
-                temp['tp'].append({pattern: []})
-                temp['fn'].append({pattern: []})
-                temp['fp'].append({pattern: []})
-                for instance in data[pattern]:
-                    if instance['tp'] > 0:
-                        temp['tp'][len(temp['tp']) - 1][pattern].append(
-                            {"System result": instance['System result'], "User result": instance['User result']})
-                    if instance['fn'] > 0:
-                        temp['fn'][len(temp['fn']) - 1][pattern].append(
-                            {"System result": instance['System result'], "User result": instance['User result']})
-                    if instance['fp'] > 0:
-                        temp['fp'][len(temp['fp']) - 1][pattern].append(
-                            {"System result": instance['System result'], "User result": instance['User result']})
-                        # simple = {'fn': [], 'tp': [], 'fp': []}
-                        # medium = {'fn': [], 'tp': [], 'fp': []}
-                        # hard = {'fn': [], 'tp': [], 'fp': []}
-
-                        # simple_file = os.path.join(final_file_path, 'simple.json')
-                        # medium_file = os.path.join(final_file_path, 'medium.json')
-                        # hard_file = os.path.join(final_file_path, 'hard.json')
-                        # if os.path.isfile(simple_file):
-                        #     data = json.load(open(simple_file, 'r'))
-                        #     for pattern in data:
-                        #         if pattern == 'overall':
-                        #             continue
-                        #         simple['tp'].append({pattern: []})
-                        #         simple['fn'].append({pattern: []})
-                        #         simple['fp'].append({pattern: []})
-                        #         for instance in data[pattern]:
-                        #             if instance['tp'] > 0:
-                        #                 simple['tp'][len(simple['tp']) - 1][pattern].append(
-                        #                     {"System result": instance['System result'], "User result": instance['User result']})
-                        #             if instance['fn'] > 0:
-                        #                 simple['fn'][len(simple['fn']) - 1][pattern].append(
-                        #                     {"System result": instance['System result'], "User result": instance['User result']})
-                        #             if instance['fp'] > 0:
-                        #                 simple['fp'][len(simple['fp']) - 1][pattern].append(
-                        #                     {"System result": instance['System result'], "User result": instance['User result']})
-                        # if os.path.isfile(medium_file):
-                        #     data = json.load(open(medium_file, 'r'))
-                        #     for pattern in data:
-                        #         if pattern == 'overall':
-                        #             continue
-                        #         medium['tp'].append({pattern: []})
-                        #         medium['fn'].append({pattern: []})
-                        #         medium['fp'].append({pattern: []})
-                        #         for instance in data[pattern]:
-                        #             if instance['tp'] > 0:
-                        #                 medium['tp'][len(medium['tp']) - 1][pattern].append(
-                        #                     {"System result": instance['System result'], "User result": instance['User result']})
-                        #             if instance['fn'] > 0:
-                        #                 medium['fn'][len(medium['fn']) - 1][pattern].append(
-                        #                     {"System result": instance['System result'], "User result": instance['User result']})
-                        #             if instance['fp'] > 0:
-                        #                 medium['fp'][len(medium['fp']) - 1][pattern].append(
-                        #                     {"System result": instance['System result'], "User result": instance['User result']})
-                        # if os.path.isfile(hard_file):
-                        #     data = json.load(open(hard_file, 'r'))
-                        #     for pattern in data:
-                        #         if pattern == 'overall':
-                        #             continue
-                        #         hard['tp'].append({pattern: []})
-                        #         hard['fn'].append({pattern: []})
-                        #         hard['fp'].append({pattern: []})
-                        #         for instance in data[pattern]:
-                        #             if instance['tp'] > 0:
-                        #                 hard['tp'][len(hard['tp']) - 1][pattern].append(
-                        #                     {"System result": instance['System result'], "User result": instance['User result']})
-                        #             if instance['fn'] > 0:
-                        #                 hard['fn'][len(hard['fn']) - 1][pattern].append(
-                        #                     {"System result": instance['System result'], "User result": instance['User result']})
-                        #             if instance['fp'] > 0:
-                        #                 hard['fp'][len(hard['fp']) - 1][pattern].append(
-                        #                     {"System result": instance['System result'], "User result": instance['User result']})
-                        #     return {'simple': simple, 'medium': medium, 'hard': hard}
-
-            return_data.update({file.split('.')[0]: temp})
-    return return_data
-
-
-def get_chart_data_from_folder(final_file_path):
-    return_data = {}
-    for file in os.listdir(final_file_path):
-        if file.endswith(".json"):
-            with open(os.path.join(final_file_path, file), 'r') as json_reader:
-                data = json.load(json_reader)
-                temp = proccess_chart_data(data)
-                temp['len'] = len(temp)
-                return_data.update({os.path.splitext(file)[0]: temp})
-    return return_data
+from shimons.Views.view_misc import get_chart_data_from_folder, save_file, \
+    proccess_analysis, proccess_search_data
+from shimons.models import DashboardPost, Request, DetectionAlgorithm, RequestAttachPattern, \
+    RequestSelectPattern
+from Documentations import Documentation
 
 
 @login_required()
@@ -184,43 +26,43 @@ def dashboard(request):
     else:
         req = req[0]
 
-
     search_data = {}
     req_chart_data = []
     compare_chart_data = []
     comp_req_id = None
     if req:
         if req.system_exe_status == '100':
-
-            final_file_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results',
-                                           'overall')
-            if not os.path.exists(final_file_path):
-                proccess_analysis(req, final_file_path)
+            ordinal_file_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results',
+                                             'ordinal',
+                                             'overall')
+            if not os.path.exists(ordinal_file_path):
+                proccess_analysis(req)
 
             comp_req_id = request.GET.get("request")
             if comp_req_id:
                 comp_req = Request.objects.get(request_id=comp_req_id)
                 if comp_req and comp_req.system_exe_status == '100':
                     comp_final_path = os.path.join("user_" + str(comp_req.user_id),
-                                                   "req_" + str(comp_req.request_id), 'results',
+                                                   "req_" + str(comp_req.request_id), 'results', 'benchmark',
                                                    'overall')
 
                     if not os.path.exists(comp_final_path):
-                        proccess_analysis(comp_req, comp_final_path)
+                        proccess_analysis(comp_req)
 
                     compare_chart_data = get_chart_data_from_folder(comp_final_path)
                     # compare_chart_data.update({"req_id": comp_req_id})
 
-            req_chart_data = get_chart_data_from_folder(final_file_path)
-            search_data = proccess_search_data(final_file_path)
+            req_chart_data = get_chart_data_from_folder(ordinal_file_path)
+            search_data = proccess_search_data(ordinal_file_path)
 
     return render(request, 'sqlab/dashboard.html',
-                      {'posts': posts, 'errors': error, 'req_form': pattern_form, 'req': req,
-                       'chart_data': req_chart_data,
-                       'search_data': search_data,
-                       'compare_form': compare_form,
-                       'compare_chart_data': compare_chart_data,
-                       'compare_req_id': comp_req_id})
+                  {'posts': posts, 'errors': error, 'req_form': pattern_form, 'req': req,
+                   'chart_data': req_chart_data,
+                   'documentations': Documentation,
+                   'search_data': search_data,
+                   'compare_form': compare_form,
+                   'compare_chart_data': compare_chart_data,
+                   'compare_req_id': comp_req_id})
 
 
 @login_required()
@@ -284,7 +126,6 @@ def upload_algorithm(request):
 @login_required()
 def download_result(request, level, req_id):
     req = Request.objects.get(request_id=req_id)
-    print(req.request_id, req.user_id)
     if req is None:
         return HttpResponse("Request id wrong")
     if req.user_id != request.user.id:

@@ -82,7 +82,7 @@ WSGI_APPLICATION = 'shimons.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'cggt_pdb_test',
+        'NAME': 'pdb_gtgt',
         'USER': 'root',
         'PASSWORD': 'root',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on

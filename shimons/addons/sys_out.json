@@ -1,0 +1,333 @@
+{
+  "groupsInfo": [
+    {
+      "groupName": "Abstract Factory-v1",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class1",
+              "role": "AbstractFactory"
+            },
+            {
+              "classId": "Class2",
+              "role": "ConcreteFactory"
+            },
+            {
+              "classId": "Class3",
+              "role": "Product"
+            },
+            {
+              "classId": "Class4",
+              "role": "Client"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Class Adapter",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class5",
+              "role": "Target"
+            },
+            {
+              "classId": "Class6",
+              "role": "Adaptee"
+            },
+            {
+              "classId": "Class7",
+              "role": "Adapter"
+            },
+            {
+              "classId": "Class8",
+              "role": "Client"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Composite-v1",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class9",
+              "role": "Component"
+            },
+            {
+              "classId": "Class10",
+              "role": "Composite"
+            },
+            {
+              "classId": "Class11",
+              "role": "Client"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Composite-v2",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class12",
+              "role": "Component"
+            },
+            {
+              "classId": "Class13",
+              "role": "Composite"
+            },
+            {
+              "classId": "Class14",
+              "role": "Leaf"
+            },
+            {
+              "classId": "Class15",
+              "role": "Client"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Decorator-v1",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class16",
+              "role": "Component"
+            },
+            {
+              "classId": "Class17",
+              "role": "ConcreteComponent"
+            },
+            {
+              "classId": "Class18",
+              "role": "Decorator"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Factory Method-v1",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class19",
+              "role": "Creator"
+            },
+            {
+              "classId": "Class20",
+              "role": "ConcreteCreator"
+            },
+            {
+              "classId": "Class21",
+              "role": "ConcreteProduct"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Object Adapter",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class22",
+              "role": "Target"
+            },
+            {
+              "classId": "Class23",
+              "role": "Adaptee"
+            },
+            {
+              "classId": "Class24",
+              "role": "Adapter"
+            },
+            {
+              "classId": "Class25",
+              "role": "Client"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Observer-v1",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class26",
+              "role": "Subject"
+            },
+            {
+              "classId": "Class27",
+              "role": "ConcreteSubject"
+            },
+            {
+              "classId": "Class28",
+              "role": "ConcreteSubject"
+            },
+            {
+              "classId": "Class29",
+              "role": "Observer"
+            },
+            {
+              "classId": "Class30",
+              "role": "Client"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Observer",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class31",
+              "role": "Subject"
+            },
+            {
+              "classId": "Class32",
+              "role": "Observer"
+            },
+            {
+              "classId": "Class33",
+              "role": "Client"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "State",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class34",
+              "role": "Context"
+            },
+            {
+              "classId": "Class35",
+              "role": "State"
+            },
+            {
+              "classId": "Class36",
+              "role": "ConcreteState"
+            },
+            {
+              "classId": "Class37",
+              "role": "ConcreteState"
+            },
+            {
+              "classId": "Class38",
+              "role": "Client"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Strategy",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class39",
+              "role": "Context"
+            },
+            {
+              "classId": "Class40",
+              "role": "Strategy"
+            },
+            {
+              "classId": "Class41",
+              "role": "ConcreteStrategy"
+            },
+            {
+              "classId": "Class42",
+              "role": "ConcreteStrategy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Template Method-v1",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class43",
+              "role": "AbstractClass"
+            },
+            {
+              "classId": "Class44",
+              "role": "ConcreteClass"
+            },
+            {
+              "classId": "Class45",
+              "role": "Client"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "groupName": "Visitor-v1",
+      "instances": [
+        {
+          "entriesInfo": [
+            {
+              "classId": "Class46",
+              "role": "Visitor"
+            },
+            {
+              "classId": "Class47",
+              "role": "ConcreteVisitor"
+            },
+            {
+              "classId": "Class48",
+              "role": "ConcreteVisitor"
+            },
+            {
+              "classId": "Class49",
+              "role": "Element"
+            },
+            {
+              "classId": "Class50",
+              "role": "ConcreteElement"
+            },
+            {
+              "classId": "Class51",
+              "role": "ConcreteElement"
+            },
+            {
+              "classId": "Class52",
+              "role": "ObjectStructure"
+            },
+            {
+              "classId": "Class53",
+              "role": "ObjectStructure"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
