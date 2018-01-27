@@ -25,8 +25,7 @@
                     </div>
 
                     <div class="up-margin form-group{% if errors.src_files %} has-error {% endif %}">
-                        <label style="color:#d0cdcd;" for="{{ req_form.src_files.id_for_label }}">Source Files
-                            Files:</label>
+                        <label style="color:#d0cdcd;" for="{{ req_form.src_files.id_for_label }}">Source Files:</label>
                         {{ req_form.src_files }}
                         <span class="help-block"> {{ errors.src_files }}</span>
                     </div>
@@ -34,7 +33,7 @@
                         <label style="color:#d0cdcd;" for="{{ req_form.pattern_select.id_for_label }}">Select Your Desired Pattern To Inject Into Code:</label></br>
 
                         {% for checkbox in req_form.pattern_select %}
-                            <label class="btn btn-primary" style="background-color: #00b385;border-color:#00a77b;width: 150px;margin-bottom: 5px">
+                            <label class="btn btn-primary" style="background-color: #00b385;border-color:#00a77b;width: 250px;margin-bottom: 5px">
                                 {{ checkbox.tag }} {{ checkbox.choice_label }}
                             </label>
                         {% endfor %}

@@ -7,7 +7,7 @@ from shimons.Views.view_misc import get_chart_data_from_folder, save_file, \
     proccess_analysis, proccess_search_data
 from shimons.models import DashboardPost, Request, DetectionAlgorithm, RequestAttachPattern, \
     RequestSelectPattern
-from Documentations import Documentation
+from shimons.Documentations import Documentation
 
 @login_required()
 def dashboard(request):

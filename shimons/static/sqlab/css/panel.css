@@ -6,7 +6,9 @@
     color: #d0cdcd;!important;
     font-size:medium;!important;
 }
-
+#tableB table, th, td {
+   border: 1px solid black;
+}
 #myDiv img
 {
   max-width:100%;
