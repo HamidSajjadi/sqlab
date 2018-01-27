@@ -2,25 +2,31 @@
 <div id="result" class="container-fluid nav-content"
      style="margin-right: 20px;margin-left: 20px;margin-top: 30px">
     <div id="Tab" class="container" style="width:97%">
+
         {% if req %}
             <ul class="nav nav-tabs">
                 {% with chart_data.keys|firstkey  as active_level %}
                     {% for level in chart_data|dictsort:0 %}
                         <li {% if level == active_level %}class="active"
                             {% endif %}>
-                            <a href="#{{ level|putunderline }}" data-toggle="tab" style="color:#00b385">{{ level|title }}</a>
+                            <a href="#{{ level|putunderline }}" data-toggle="tab"
+                               style="color:#00b385">{{ level|title }}</a>
                         </li>
                     {% endfor %}
                     </ul>
+                    <a href="#" data-toggle="modal" data-target="#modal_result">
+            What is this section?
+        </a>
                     <div class="tab-content" align="center">
                     {% for level, data in chart_data.items %}
                         <div class="tab-pane {% if level == active_level %}
                     active
                     {% endif %}" id="{{ level |putunderline }}">
                             {% if data.len != 0 %}
-                                <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden"!important>
+                                <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden"
+                                     !important>
 
-                                    <table class="re-tabmargin table" style="width: 500px"!important>
+                                    <table class="re-tabmargin table" style="width: 500px" !important>
                                         <thead>
                                         <tr class="t-text">
                                             <th scope="col">#</th>

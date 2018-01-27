@@ -1,9 +1,12 @@
 <div id="upload" class="container-fluid nav-content"
      style="margin-right: 20px;margin-left: 20px;margin-top: 30px;display: none">
+
     <div class="row">
         <div class="col-sm-12 col-md-12" id="content">
             <p style="color: #00b385;font-size: xx-large;margin-bottom: 40px"> Upload Your Algorithm and Patterns </p>
-
+            <a href="#" data-toggle="modal" data-target="#modal_upload">
+                What is this section?
+            </a>
 
             <form action="/dashboard/upload/" method="post" enctype="multipart/form-data"
                   id="js-upload-jar-form">
@@ -11,14 +14,15 @@
 
                 <div class="form">
                     <div class="up-margin form-group{% if errors.jar_files %} has-error {% endif %}">
-                     <h4 style="color: #d0cdcd">Select jar files from your computer</h4>
+                        <h4 style="color: #d0cdcd">Select jar files from your computer</h4>
                         <label style="color:#d0cdcd;" for="{{ req_form.jar_files.id_for_label }}">Algorithm
                             Files:</label>
                         {{ req_form.jar_files }}
                         <span class="help-block"> {{ errors.jar_files }}</span>
                     </div>
                     <div class="up-margin form-group{% if errors.jar_files_main %} has-error {% endif %}">
-                        <label style="color:#d0cdcd;" for="{{ req_form.main.id_for_label }}">Enter Your Main File Name:</label>
+                        <label style="color:#d0cdcd;" for="{{ req_form.main.id_for_label }}">Enter Your Main File
+                            Name:</label>
                         {{ req_form.main }}
                         <span class="help-block"> {{ errors.jar_files_main }}</span>
 
@@ -30,10 +34,12 @@
                         <span class="help-block"> {{ errors.src_files }}</span>
                     </div>
                     <div class="up-margin form-group">
-                        <label style="color:#d0cdcd;" for="{{ req_form.pattern_select.id_for_label }}">Select Your Desired Pattern To Inject Into Code:</label></br>
+                        <label style="color:#d0cdcd;" for="{{ req_form.pattern_select.id_for_label }}">Select Your
+                            Desired Pattern To Inject Into Code:</label></br>
 
                         {% for checkbox in req_form.pattern_select %}
-                            <label class="btn btn-primary" style="background-color: #00b385;border-color:#00a77b;width: 250px;margin-bottom: 5px">
+                            <label class="btn btn-primary"
+                                   style="background-color: #00b385;border-color:#00a77b;width: 250px;margin-bottom: 5px">
                                 {{ checkbox.tag }} {{ checkbox.choice_label }}
                             </label>
                         {% endfor %}
@@ -44,7 +50,8 @@
                             Files:</label>
                         {{ req_form.pattern_files }}
                     </div>
-                    <button type="submit" class="up-button btn btn-sm btn-primary" id="js-upload-patterns-submit"> Upload Files To Evaluate Your Algorithm
+                    <button type="submit" class="up-button btn btn-sm btn-primary" id="js-upload-patterns-submit">
+                        Upload Files To Evaluate Your Algorithm
                     </button>
                 </div>
             </form>

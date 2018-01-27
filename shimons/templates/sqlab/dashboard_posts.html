@@ -35,7 +35,14 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="modal_{{ title }}" role="dialog" style="direction: ltr;">
+
+            </div>
+        </div>
+        <!-- /.row -->
+    {% endfor %}
+</div>
+{% for title,content in documentations.items %}
+                    <div class="modal fade" id="modal_{{ title }}" role="dialog" style="direction: ltr;">
                     <div class="modal-dialog">
 
                         <div class="modal-content" id="myDiv">
@@ -61,10 +68,5 @@
 
                     </div>
                 </div>
-
-            </div>
-        </div>
-        <!-- /.row -->
-    {% endfor %}
-</div>
+{% endfor %}
 

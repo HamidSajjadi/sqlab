@@ -5,6 +5,7 @@
     <div id="Tab" class="container" style="width:97%">
 
         {% if req %}
+
             {% if not compare_chart_data %}
                 <form method="get" action="/dashboard/#compare">
                     <div class="form-group">
@@ -16,17 +17,23 @@
                             style="background-color: #00b385;border-color:#00a77b">Compare
                     </button>
                 </form>
+                <a href="#" data-toggle="modal" data-target="#modal_compare">
+                    What is this section?
+                </a>
             {% else %}
                 {% with compare_chart_data.keys|firstkey  as active_level %}
 
                     <ul class="nav nav-tabs">
                         {% for level in compare_chart_data|dictsort:0 %}
                             <li {% if level == active_level %}class="active"{% endif %}>
-                                <a href="#{{ level|putunderline }}_compare" data-toggle="tab" style="color:#00b385">{{ level|title }}</a>
+                                <a href="#{{ level|putunderline }}_compare" data-toggle="tab"
+                                   style="color:#00b385">{{ level|title }}</a>
                             </li>
                         {% endfor %}
                     </ul>
-
+                    <a href="#" data-toggle="modal" data-target="#modal_compare">
+                        What is this section?
+                    </a>
                     <div class="tab-content" align="center">
                     {% for level, data in compare_chart_data.items %}
                         {% if level != "overall" %}
@@ -143,16 +150,16 @@
                     {% endfor %}
                 {% endwith %}
             </div>
-                   <form method="get" action="/dashboard/#compare">
-                        <div class="form-group">
-                            <label style="color:#d0cdcd;" for="{{ compare_form.request.id_for_label }}">Algorithm
-                                Files:</label>
-                            {{ compare_form.request }}
-                        </div>
-                        <button type="submit" class="btn btn-sm btn-primary"
-                                style="background-color: #00b385;border-color:#00a77b">Choose Another
-                        </button>
-                    </form>
+                <form method="get" action="/dashboard/#compare">
+                    <div class="form-group">
+                        <label style="color:#d0cdcd;" for="{{ compare_form.request.id_for_label }}">Algorithm
+                            Files:</label>
+                        {{ compare_form.request }}
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary"
+                            style="background-color: #00b385;border-color:#00a77b">Choose Another
+                    </button>
+                </form>
             {% endif %}
         {% else %}
             <h3> Please use upload tab to upload files for your pattern detection
