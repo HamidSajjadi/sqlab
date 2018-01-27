@@ -6,9 +6,14 @@
     color: #d0cdcd;!important;
     font-size:medium;!important;
 }
-#tableB table, th, td {
-   border: 1px solid black;
+.post table,th,td{
+border: 1px solid black;
+
 }
+/*#tableB th,td{*/
+   /*border: 1px solid black;*/
+/*}*/
+
 #myDiv img
 {
   max-width:100%;
@@ -34,8 +39,8 @@
 }
 
 .t-text {
-    color: #d0cdcd;
-    margin-top: 20px;
+    color: #d0cdcd;!important;
+    margin-top: 20px;!important;
 }
 
 .result {
