@@ -26,7 +26,7 @@ urlpatterns = [
     path('login/', user_views.login_user, name='login'),
     path('dashboard/', dashbord_views.dashboard, name='dashboard'),
     path('dashboard/upload/', dashbord_views.upload_algorithm, name='algorithm upload'),
-    re_path('dashboard/(?P<req_id>[0-9]+)/(?P<level>\\bsimple\\b|\\bmedium\\b|\\bhard\\b)-result.json',
+    re_path('dashboard/(?P<req_id>[0-9]+)/(?P<level>.+)-result.json',
             dashbord_views.download_result, name='download result'),
     path('index/', general_views.index, name='index'),
     path(r'', RedirectView.as_view(url='index/')),

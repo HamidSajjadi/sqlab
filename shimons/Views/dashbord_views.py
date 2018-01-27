@@ -61,6 +61,7 @@ def dashboard(request):
             req_chart_data = get_chart_data_from_folder(ordinal_file_path)
             search_data = proccess_search_data(ordinal_file_path)
 
+    print(req_chart_data.keys())
     return render(request, 'sqlab/dashboard.html',
                   {'posts': posts, 'errors': error, 'req_form': pattern_form, 'req': req,
                    'chart_data': req_chart_data,
@@ -141,13 +142,13 @@ def download_result(request, level, req_id):
     if req.system_exe_status != '100':
         return HttpResponse("Your request has not yet been proccesed")
 
-    final_file_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results',
+    final_file_path = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results','ordinal',
                                    'overall')
-    final_file = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results',
+    final_file = os.path.join("user_" + str(request.user.id), "req_" + str(req.request_id), 'results','ordinal',
                               'overall', level + '.json')
 
     if not os.path.isfile(final_file):
-        proccess_analysis(req, final_file_path)
+        proccess_analysis(req)
         if not os.path.isfile(final_file):
             return HttpResponse("This request has no result for {} level".format(level))
 
