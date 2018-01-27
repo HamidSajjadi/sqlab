@@ -8,7 +8,7 @@
                     {% for level in chart_data|dictsort:0 %}
                         <li {% if level == active_level %}class="active"
                             {% endif %}>
-                            <a href="#{{ level|putunderline }}" data-toggle="tab" style="color:#00b385">{{ level }}</a>
+                            <a href="#{{ level|putunderline }}" data-toggle="tab" style="color:#00b385">{{ level|title }}</a>
                         </li>
                     {% endfor %}
                     </ul>

@@ -61,7 +61,6 @@ def dashboard(request):
             req_chart_data = get_chart_data_from_folder(ordinal_file_path)
             search_data = proccess_search_data(ordinal_file_path)
 
-    print(req_chart_data.keys())
     return render(request, 'sqlab/dashboard.html',
                   {'posts': posts, 'errors': error, 'req_form': pattern_form, 'req': req,
                    'chart_data': req_chart_data,

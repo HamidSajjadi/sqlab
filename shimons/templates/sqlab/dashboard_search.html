@@ -9,7 +9,7 @@
 
                     {% for level in search_data|dictsort:0 %}
                         <li {% if level == active_level %}class="active"{% endif %}>
-                            <a href="#{{ level }}_search" data-toggle="tab" style="color:#00b385">{{ level }}</a>
+                            <a href="#{{ level|putunderline }}_search" data-toggle="tab" style="color:#00b385">{{ level }}</a>
                         </li>
                     {% endfor %}
                     </ul>
@@ -18,10 +18,10 @@
                     {% for level, data in search_data.items %}
                         <div class="tab-pane {% if level == active_level %}
                     active
-                    {% endif %}" id="{{ level }}_search">
+                    {% endif %}" id="{{ level|putunderline }}_search">
                             {% if data.fn or data.tp or data.fp %}
                                 <div class="well" style="margin-top: 20px;background-color: #424242;border: hidden">
-                                    <h1 class="h1-result">FN</h1>
+                                    <h1 class="h1-result">False Negative</h1>
                                     <div class="result well">
                                         <p class="p-result">
                                             {% for pattern in data.fn %}
@@ -29,8 +29,8 @@
                                                     {% if value %}
                                                         {{ key }} :
                                                         <br>
-                                                        {% for item in value %}
-                                                            {{ value }}
+                                                        {% for item in value|first %}
+                                                            {{ item }}: {{ value.0|getitem:item }}
                                                             <br>
                                                         {% endfor %}
                                                         <br>
@@ -41,7 +41,7 @@
                                             {% endfor %}
                                         </p>
                                     </div>
-                                    <h1 class="h1-result">FP</h1>
+                                    <h1 class="h1-result">False Positive</h1>
 
                                     <div class="result well">
                                         <p class="p-result">
@@ -50,8 +50,8 @@
                                                     {% if value %}
                                                         {{ key }} :
                                                         <br>
-                                                        {% for item in value %}
-                                                            {{ value }}
+                                                      {% for item in value|first %}
+                                                            {{ item }}: {{ value.0|getitem:item }}
                                                             <br>
                                                         {% endfor %}
                                                         <br>
@@ -61,7 +61,7 @@
 
                                             {% endfor %}                   </p>
                                     </div>
-                                    <h1 class="h1-result">TP</h1>
+                                    <h1 class="h1-result">True Positive</h1>
 
                                     <div class="result well">
                                         <p class="p-result">
@@ -70,8 +70,8 @@
                                                     {% if value %}
                                                         {{ key }} :
                                                         <br>
-                                                        {% for item in value %}
-                                                            {{ value }}
+                                                        {% for item in value|first %}
+                                                            {{ item }}: {{ value.0|getitem:item }}
                                                             <br>
                                                         {% endfor %}
                                                         <br>

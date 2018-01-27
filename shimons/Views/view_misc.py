@@ -48,7 +48,7 @@ def proccess_analysis(req):
         compare.summarize(benchmark_file_set[level], benchmark_file_path, level + '.json')
     for level in ordinal_file_set:
         compare.summarize(ordinal_file_set[level], ordinal_file_path, level + '.json')
-    get_rank(req)
+    get_result(req)
 
 
 def proccess_chart_data(raw_data):
@@ -173,7 +173,6 @@ def get_chart_data_from_folder(final_file_path):
 
 
 def save_final_result(req, category):
-    print("HERE")
     file_path = os.path.join("user_" + str(req.user_id), "req_" + str(req.request_id), 'results',
                              category.lower(),
                              'overall')
@@ -201,15 +200,11 @@ def save_final_result(req, category):
     final_res.save()
 
 
-def get_rank(req):
+def get_result(req):
     result = FinalResult.objects.filter(request=req)
-    print("HERE")
     if result.count() == 0:
         save_final_result(req, "BENCHMARK")
         save_final_result(req, "ORDINAL")
-    else:
-        count = AnalysisResult.objects.filter(request=req, targetcode__config__category="BENCHMARK").count()
-        print("COUNT", count)
 
 
 def save_file(file, path):
